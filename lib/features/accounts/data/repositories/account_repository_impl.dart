@@ -350,14 +350,18 @@ class AccountRepositoryImpl implements AccountRepository {
                 id: ta.id,
                 transactionId: ta.transactionId,
                 role: AllocationRole.values.byName(ta.role.toLowerCase()),
-                endpointType: EndpointType.values.byName(ta.endpointType.toLowerCase()),
+                endpointType: EndpointType.values.byName(
+                  ta.endpointType.toLowerCase(),
+                ),
                 accountId: ta.accountId,
                 goalId: ta.goalId,
                 amount: ta.amount,
                 currency: ta.currency,
               ).successOrNull!;
 
-              allocationsMap.putIfAbsent(ta.transactionId, () => []).add(domainTa);
+              allocationsMap
+                  .putIfAbsent(ta.transactionId, () => [])
+                  .add(domainTa);
             }
 
             final transactionMap = <String, Transaction>{};
@@ -438,7 +442,9 @@ class AccountRepositoryImpl implements AccountRepository {
 
       return const Success(null);
     } catch (e, stack) {
-      return FailureResult(DatabaseFailure('Failed to generate statement: $e\n$stack', e));
+      return FailureResult(
+        DatabaseFailure('Failed to generate statement: $e\n$stack', e),
+      );
     }
   }
 

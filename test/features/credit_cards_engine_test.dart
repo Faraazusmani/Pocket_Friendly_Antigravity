@@ -305,7 +305,8 @@ void main() {
       expect(
         genResult.isSuccess,
         isTrue,
-        reason: 'Failed: ${genResult.failureOrNull?.message} (${genResult.failureOrNull})',
+        reason:
+            'Failed: ${genResult.failureOrNull?.message} (${genResult.failureOrNull})',
       );
 
       final stmtResult = await accountRepo.getCreditCardStatements(
