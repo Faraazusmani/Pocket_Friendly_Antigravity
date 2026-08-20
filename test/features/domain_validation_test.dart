@@ -191,6 +191,16 @@ void main() {
         currency: 'USD',
       ).successOrNull!;
 
+      final taFunding1000 = TransferAllocation.create(
+        id: 'ta-fund-1000',
+        transactionId: 'tx1',
+        role: AllocationRole.source,
+        endpointType: EndpointType.account,
+        accountId: 'acc-hdfc',
+        amount: 1000,
+        currency: 'USD',
+      ).successOrNull!;
+
       final validExpense = Transaction.create(
         id: 'tx1',
         profileId: 'p1',
@@ -203,9 +213,19 @@ void main() {
         createdAt: now,
         updatedAt: now,
         categoryAllocations: [ca1, ca2],
-        transferAllocations: [],
+        transferAllocations: [taFunding1000],
       );
       expect(validExpense.isSuccess, isTrue);
+
+      final taFunding900 = TransferAllocation.create(
+        id: 'ta-fund-900',
+        transactionId: 'tx1',
+        role: AllocationRole.source,
+        endpointType: EndpointType.account,
+        accountId: 'acc-hdfc',
+        amount: 900,
+        currency: 'USD',
+      ).successOrNull!;
 
       // Failure on category allocations sum mismatch (300+700 != 900)
       final invalidExpenseSum = Transaction.create(
@@ -220,7 +240,7 @@ void main() {
         createdAt: now,
         updatedAt: now,
         categoryAllocations: [ca1, ca2],
-        transferAllocations: [],
+        transferAllocations: [taFunding900],
       );
       expect(invalidExpenseSum.isFailure, isTrue);
       expect(
