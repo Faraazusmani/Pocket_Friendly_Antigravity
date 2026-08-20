@@ -5,6 +5,8 @@ import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/accounts/presentation/screens/accounts_screen.dart';
 import '../../features/accounts/presentation/screens/account_detail_screen.dart';
 import '../../features/accounts/presentation/screens/create_edit_account_screen.dart';
+import '../../features/categories/presentation/screens/categories_screen.dart';
+import '../../features/categories/presentation/screens/create_edit_category_screen.dart';
 
 /// App routing paths.
 class AppRoutes {
@@ -14,6 +16,8 @@ class AppRoutes {
   static const String insights = '/insights';
   static const String goals = '/goals';
   static const String categories = '/categories';
+  static const String createCategory = '/categories/create';
+  static const String editCategory = '/categories/edit/:id';
   static const String settings = '/settings';
   static const String accounts = '/accounts';
   static const String accountDetail = '/accounts/:id';
@@ -49,8 +53,16 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.categories,
+      builder: (context, state) => const CategoriesScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.createCategory,
+      builder: (context, state) => const CreateEditCategoryScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.editCategory,
       builder: (context, state) =>
-          const _PlaceholderScreen(title: 'Categories'),
+          CreateEditCategoryScreen(categoryId: state.pathParameters['id']!),
     ),
     GoRoute(
       path: AppRoutes.settings,
