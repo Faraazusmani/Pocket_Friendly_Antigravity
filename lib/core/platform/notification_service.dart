@@ -88,6 +88,7 @@ class NotificationServiceImpl implements NotificationService {
             'Main notification channel for Pocket Friendly finance alerts',
         importance: Importance.max,
         priority: Priority.high,
+        visibility: NotificationVisibility.private,
       );
       const iosDetails = DarwinNotificationDetails();
       const details = NotificationDetails(
@@ -124,6 +125,7 @@ class NotificationServiceImpl implements NotificationService {
             'Main notification channel for Pocket Friendly finance alerts',
         importance: Importance.max,
         priority: Priority.high,
+        visibility: NotificationVisibility.private,
       );
       const iosDetails = DarwinNotificationDetails();
       const details = NotificationDetails(
