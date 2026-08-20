@@ -10,6 +10,7 @@ import '../../features/categories/presentation/screens/create_edit_category_scre
 import '../../features/goals/presentation/screens/goals_screen.dart';
 import '../../features/goals/presentation/screens/goal_detail_screen.dart';
 import '../../features/goals/presentation/screens/create_edit_goal_screen.dart';
+import '../../features/insights/presentation/screens/insights_screen.dart';
 import 'navigation_shell_layout.dart';
 
 /// App routing paths.
@@ -57,8 +58,7 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: AppRoutes.insights,
-          builder: (context, state) =>
-              const _PlaceholderScreen(title: 'Insights'),
+          builder: (context, state) => const InsightsScreen(),
         ),
         GoRoute(
           path: AppRoutes.goals,
