@@ -294,41 +294,110 @@ class Transaction {
       );
     }
 
+    final isBalanceAdjustment = subtype == 'balanceAdjustment';
+
     // --- Validation Invariants by Type ---
 
     if (type == TransactionType.expense || type == TransactionType.income) {
-      // 1. Must NOT have transfer allocations
-      if (transferAllocations.isNotEmpty) {
-        return FailureResult(
-          ValidationFailure(
-            '${type.name.toUpperCase()} must not contain transfer endpoint allocations',
-          ),
-        );
-      }
-      // 2. Must contain category allocations
-      if (categoryAllocations.isEmpty) {
-        return FailureResult(
-          ValidationFailure(
-            '${type.name.toUpperCase()} must contain at least one category allocation',
-          ),
-        );
-      }
-      // 3. Category allocations must equal transaction total
-      int categorySum = 0;
-      for (final ca in categoryAllocations) {
-        if (ca.currency != currency) {
+      if (isBalanceAdjustment) {
+        // 1. Balance adjustments must NOT have category allocations
+        if (categoryAllocations.isNotEmpty) {
           return const FailureResult(
-            ValidationFailure('Category allocation currency mismatch'),
+            ValidationFailure(
+              'Balance adjustment must not contain category allocations',
+            ),
           );
         }
-        categorySum += ca.amount;
-      }
-      if (categorySum != totalAmount) {
-        return FailureResult(
-          ValidationFailure(
-            'Sum of category allocations ($categorySum) does not match transaction total ($totalAmount)',
-          ),
-        );
+        // 2. Must contain exactly one transfer allocation
+        if (transferAllocations.length != 1) {
+          return const FailureResult(
+            ValidationFailure(
+              'Balance adjustment must contain exactly one account transfer allocation',
+            ),
+          );
+        }
+        final allocation = transferAllocations.first;
+        if (allocation.endpointType != EndpointType.account) {
+          return const FailureResult(
+            ValidationFailure(
+              'Balance adjustment must be performed on an Account',
+            ),
+          );
+        }
+        if (allocation.amount != totalAmount) {
+          return const FailureResult(
+            ValidationFailure(
+              'Balance adjustment allocation amount must match transaction total',
+            ),
+          );
+        }
+      } else {
+        // Normal Expense or Income
+        // 1. Must contain category allocations summing to total
+        if (categoryAllocations.isEmpty) {
+          return FailureResult(
+            ValidationFailure(
+              '${type.name.toUpperCase()} must contain at least one category allocation',
+            ),
+          );
+        }
+        int categorySum = 0;
+        for (final ca in categoryAllocations) {
+          if (ca.currency != currency) {
+            return const FailureResult(
+              ValidationFailure('Category allocation currency mismatch'),
+            );
+          }
+          categorySum += ca.amount;
+        }
+        if (categorySum != totalAmount) {
+          return FailureResult(
+            ValidationFailure(
+              'Sum of category allocations ($categorySum) does not match transaction total ($totalAmount)',
+            ),
+          );
+        }
+
+        // 2. Must contain account funding transfer allocations summing to total
+        if (transferAllocations.isEmpty) {
+          return FailureResult(
+            ValidationFailure(
+              '${type.name.toUpperCase()} must contain account funding allocations',
+            ),
+          );
+        }
+
+        final expectedRole = type == TransactionType.expense
+            ? AllocationRole.source
+            : AllocationRole.destination;
+        int fundingSum = 0;
+        for (final ta in transferAllocations) {
+          if (ta.currency != currency) {
+            return const FailureResult(
+              ValidationFailure('Funding allocation currency mismatch'),
+            );
+          }
+          if (ta.endpointType != EndpointType.account) {
+            return const FailureResult(
+              ValidationFailure('Funding allocations must be Accounts only'),
+            );
+          }
+          if (ta.role != expectedRole) {
+            return FailureResult(
+              ValidationFailure(
+                'Funding allocation role must be ${expectedRole.name.toUpperCase()} for ${type.name.toUpperCase()}',
+              ),
+            );
+          }
+          fundingSum += ta.amount;
+        }
+        if (fundingSum != totalAmount) {
+          return FailureResult(
+            ValidationFailure(
+              'Sum of funding allocations ($fundingSum) does not match transaction total ($totalAmount)',
+            ),
+          );
+        }
       }
     }
 

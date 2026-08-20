@@ -57,9 +57,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
     final transferAllocations = taResults.map(_taToDomain).toList();
 
     // 3. Compute totalAmount
-    // Total is either category sum or source transfer sum. If both empty, default to 0.
     int totalAmount = 0;
-    if (tx.type == TransactionType.transfer.name) {
+    if (tx.subtype == 'balanceAdjustment') {
+      totalAmount = transferAllocations.isEmpty
+          ? 0
+          : transferAllocations.first.amount;
+    } else if (tx.type.toLowerCase() == TransactionType.transfer.name) {
       totalAmount = transferAllocations
           .where((ta) => ta.role == AllocationRole.source)
           .map((ta) => ta.amount)
@@ -158,6 +161,50 @@ class TransactionRepositoryImpl implements TransactionRepository {
   Future<Result<void, Failure>> saveTransaction(Transaction transaction) async {
     try {
       await _database.transaction(() async {
+        // 0. Goal Balance Invariant Check
+        if (transaction.status == TransactionStatus.active) {
+          for (final ta in transaction.transferAllocations) {
+            if (ta.endpointType == EndpointType.goal &&
+                ta.role == AllocationRole.source) {
+              final goalId = ta.goalId!;
+              final goalQuery =
+                  _database.select(_database.transferAllocations).join([
+                    innerJoin(
+                      _database.transactions,
+                      _database.transactions.id.equalsExp(
+                        _database.transferAllocations.transactionId,
+                      ),
+                    ),
+                  ])..where(
+                    _database.transferAllocations.goalId.equals(goalId) &
+                        _database.transactions.status.equals(
+                          TransactionStatus.active.name.toUpperCase(),
+                        ) &
+                        _database.transactions.id.equals(transaction.id).not(),
+                  );
+
+              final results = await goalQuery.get();
+              int currentBalance = 0;
+              for (final row in results) {
+                final alloc = row.readTable(_database.transferAllocations);
+                if (alloc.role ==
+                    AllocationRole.destination.name.toUpperCase()) {
+                  currentBalance += alloc.amount;
+                } else if (alloc.role ==
+                    AllocationRole.source.name.toUpperCase()) {
+                  currentBalance -= alloc.amount;
+                }
+              }
+
+              if (currentBalance - ta.amount < 0) {
+                throw Exception(
+                  'Goal withdrawal of ${ta.amount} exceeds available goal balance of $currentBalance.',
+                );
+              }
+            }
+          }
+        }
+
         // 1. Insert/Update the root transaction record
         final companion = TransactionsCompanion(
           id: Value(transaction.id),
@@ -224,8 +271,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
       return const Success(null);
     } catch (e) {
+      final msg = e.toString().replaceFirst('Exception: ', '');
       return FailureResult(
-        DatabaseFailure('Failed to save transaction: ${transaction.id}', e),
+        DatabaseFailure(msg, e),
       );
     }
   }

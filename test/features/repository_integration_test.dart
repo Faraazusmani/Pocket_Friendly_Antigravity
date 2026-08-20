@@ -9,7 +9,6 @@ import 'package:pocket_friendly/features/categories/domain/category.dart';
 
 import 'package:pocket_friendly/features/categories/data/repositories/category_repository_impl.dart';
 
-
 import 'package:pocket_friendly/features/transactions/domain/transaction.dart';
 import 'package:pocket_friendly/features/transactions/data/repositories/transaction_repository_impl.dart';
 
@@ -242,6 +241,16 @@ void main() {
         currency: 'INR',
       ).successOrNull!;
 
+      final ta = TransferAllocation.create(
+        id: 'stable-transfer-id',
+        transactionId: 'stable-txn-id',
+        role: AllocationRole.source,
+        endpointType: EndpointType.account,
+        accountId: 'acc1',
+        amount: 500,
+        currency: 'INR',
+      ).successOrNull!;
+
       final txn = Transaction.create(
         id: 'stable-txn-id',
         profileId: 'p1',
@@ -254,7 +263,7 @@ void main() {
         createdAt: now,
         updatedAt: now,
         categoryAllocations: [ca],
-        transferAllocations: [],
+        transferAllocations: [ta],
       ).successOrNull!;
 
       // 2. Save
