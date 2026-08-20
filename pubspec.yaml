@@ -60,6 +60,7 @@ dependencies:
   # Utilities & Logging
   logger: ^2.4.0
   lucide_icons: ^0.257.0
+  uuid: ^4.3.3
 
 dev_dependencies:
   flutter_test:
