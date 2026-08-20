@@ -9113,6 +9113,658 @@ class UnallocatedBudgetPoolsCompanion
   }
 }
 
+class $CreditCardStatementsTable extends CreditCardStatements
+    with TableInfo<$CreditCardStatementsTable, CreditCardStatementData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CreditCardStatementsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id)',
+    ),
+  );
+  static const VerificationMeta _accountIdMeta = const VerificationMeta(
+    'accountId',
+  );
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+    'account_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES accounts (id)',
+    ),
+  );
+  static const VerificationMeta _statementCycleMeta = const VerificationMeta(
+    'statementCycle',
+  );
+  @override
+  late final GeneratedColumn<String> statementCycle = GeneratedColumn<String>(
+    'statement_cycle',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statementPeriodStartMeta =
+      const VerificationMeta('statementPeriodStart');
+  @override
+  late final GeneratedColumn<DateTime> statementPeriodStart =
+      GeneratedColumn<DateTime>(
+        'statement_period_start',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _statementPeriodEndMeta =
+      const VerificationMeta('statementPeriodEnd');
+  @override
+  late final GeneratedColumn<DateTime> statementPeriodEnd =
+      GeneratedColumn<DateTime>(
+        'statement_period_end',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _outstandingAmountMeta = const VerificationMeta(
+    'outstandingAmount',
+  );
+  @override
+  late final GeneratedColumn<int> outstandingAmount = GeneratedColumn<int>(
+    'outstanding_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isSettledMeta = const VerificationMeta(
+    'isSettled',
+  );
+  @override
+  late final GeneratedColumn<bool> isSettled = GeneratedColumn<bool>(
+    'is_settled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_settled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    accountId,
+    statementCycle,
+    statementPeriodStart,
+    statementPeriodEnd,
+    outstandingAmount,
+    isSettled,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'credit_card_statements';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CreditCardStatementData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(
+        _accountIdMeta,
+        accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('statement_cycle')) {
+      context.handle(
+        _statementCycleMeta,
+        statementCycle.isAcceptableOrUnknown(
+          data['statement_cycle']!,
+          _statementCycleMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_statementCycleMeta);
+    }
+    if (data.containsKey('statement_period_start')) {
+      context.handle(
+        _statementPeriodStartMeta,
+        statementPeriodStart.isAcceptableOrUnknown(
+          data['statement_period_start']!,
+          _statementPeriodStartMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_statementPeriodStartMeta);
+    }
+    if (data.containsKey('statement_period_end')) {
+      context.handle(
+        _statementPeriodEndMeta,
+        statementPeriodEnd.isAcceptableOrUnknown(
+          data['statement_period_end']!,
+          _statementPeriodEndMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_statementPeriodEndMeta);
+    }
+    if (data.containsKey('outstanding_amount')) {
+      context.handle(
+        _outstandingAmountMeta,
+        outstandingAmount.isAcceptableOrUnknown(
+          data['outstanding_amount']!,
+          _outstandingAmountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_outstandingAmountMeta);
+    }
+    if (data.containsKey('is_settled')) {
+      context.handle(
+        _isSettledMeta,
+        isSettled.isAcceptableOrUnknown(data['is_settled']!, _isSettledMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CreditCardStatementData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CreditCardStatementData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      accountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}account_id'],
+      )!,
+      statementCycle: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}statement_cycle'],
+      )!,
+      statementPeriodStart: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}statement_period_start'],
+      )!,
+      statementPeriodEnd: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}statement_period_end'],
+      )!,
+      outstandingAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}outstanding_amount'],
+      )!,
+      isSettled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_settled'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CreditCardStatementsTable createAlias(String alias) {
+    return $CreditCardStatementsTable(attachedDatabase, alias);
+  }
+}
+
+class CreditCardStatementData extends DataClass
+    implements Insertable<CreditCardStatementData> {
+  final String id;
+  final String profileId;
+  final String accountId;
+  final String statementCycle;
+  final DateTime statementPeriodStart;
+  final DateTime statementPeriodEnd;
+  final int outstandingAmount;
+  final bool isSettled;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const CreditCardStatementData({
+    required this.id,
+    required this.profileId,
+    required this.accountId,
+    required this.statementCycle,
+    required this.statementPeriodStart,
+    required this.statementPeriodEnd,
+    required this.outstandingAmount,
+    required this.isSettled,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<String>(profileId);
+    map['account_id'] = Variable<String>(accountId);
+    map['statement_cycle'] = Variable<String>(statementCycle);
+    map['statement_period_start'] = Variable<DateTime>(statementPeriodStart);
+    map['statement_period_end'] = Variable<DateTime>(statementPeriodEnd);
+    map['outstanding_amount'] = Variable<int>(outstandingAmount);
+    map['is_settled'] = Variable<bool>(isSettled);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  CreditCardStatementsCompanion toCompanion(bool nullToAbsent) {
+    return CreditCardStatementsCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      accountId: Value(accountId),
+      statementCycle: Value(statementCycle),
+      statementPeriodStart: Value(statementPeriodStart),
+      statementPeriodEnd: Value(statementPeriodEnd),
+      outstandingAmount: Value(outstandingAmount),
+      isSettled: Value(isSettled),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory CreditCardStatementData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CreditCardStatementData(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      accountId: serializer.fromJson<String>(json['accountId']),
+      statementCycle: serializer.fromJson<String>(json['statementCycle']),
+      statementPeriodStart: serializer.fromJson<DateTime>(
+        json['statementPeriodStart'],
+      ),
+      statementPeriodEnd: serializer.fromJson<DateTime>(
+        json['statementPeriodEnd'],
+      ),
+      outstandingAmount: serializer.fromJson<int>(json['outstandingAmount']),
+      isSettled: serializer.fromJson<bool>(json['isSettled']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<String>(profileId),
+      'accountId': serializer.toJson<String>(accountId),
+      'statementCycle': serializer.toJson<String>(statementCycle),
+      'statementPeriodStart': serializer.toJson<DateTime>(statementPeriodStart),
+      'statementPeriodEnd': serializer.toJson<DateTime>(statementPeriodEnd),
+      'outstandingAmount': serializer.toJson<int>(outstandingAmount),
+      'isSettled': serializer.toJson<bool>(isSettled),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  CreditCardStatementData copyWith({
+    String? id,
+    String? profileId,
+    String? accountId,
+    String? statementCycle,
+    DateTime? statementPeriodStart,
+    DateTime? statementPeriodEnd,
+    int? outstandingAmount,
+    bool? isSettled,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => CreditCardStatementData(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    accountId: accountId ?? this.accountId,
+    statementCycle: statementCycle ?? this.statementCycle,
+    statementPeriodStart: statementPeriodStart ?? this.statementPeriodStart,
+    statementPeriodEnd: statementPeriodEnd ?? this.statementPeriodEnd,
+    outstandingAmount: outstandingAmount ?? this.outstandingAmount,
+    isSettled: isSettled ?? this.isSettled,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  CreditCardStatementData copyWithCompanion(
+    CreditCardStatementsCompanion data,
+  ) {
+    return CreditCardStatementData(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      statementCycle: data.statementCycle.present
+          ? data.statementCycle.value
+          : this.statementCycle,
+      statementPeriodStart: data.statementPeriodStart.present
+          ? data.statementPeriodStart.value
+          : this.statementPeriodStart,
+      statementPeriodEnd: data.statementPeriodEnd.present
+          ? data.statementPeriodEnd.value
+          : this.statementPeriodEnd,
+      outstandingAmount: data.outstandingAmount.present
+          ? data.outstandingAmount.value
+          : this.outstandingAmount,
+      isSettled: data.isSettled.present ? data.isSettled.value : this.isSettled,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreditCardStatementData(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('accountId: $accountId, ')
+          ..write('statementCycle: $statementCycle, ')
+          ..write('statementPeriodStart: $statementPeriodStart, ')
+          ..write('statementPeriodEnd: $statementPeriodEnd, ')
+          ..write('outstandingAmount: $outstandingAmount, ')
+          ..write('isSettled: $isSettled, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    profileId,
+    accountId,
+    statementCycle,
+    statementPeriodStart,
+    statementPeriodEnd,
+    outstandingAmount,
+    isSettled,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CreditCardStatementData &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.accountId == this.accountId &&
+          other.statementCycle == this.statementCycle &&
+          other.statementPeriodStart == this.statementPeriodStart &&
+          other.statementPeriodEnd == this.statementPeriodEnd &&
+          other.outstandingAmount == this.outstandingAmount &&
+          other.isSettled == this.isSettled &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CreditCardStatementsCompanion
+    extends UpdateCompanion<CreditCardStatementData> {
+  final Value<String> id;
+  final Value<String> profileId;
+  final Value<String> accountId;
+  final Value<String> statementCycle;
+  final Value<DateTime> statementPeriodStart;
+  final Value<DateTime> statementPeriodEnd;
+  final Value<int> outstandingAmount;
+  final Value<bool> isSettled;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const CreditCardStatementsCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.statementCycle = const Value.absent(),
+    this.statementPeriodStart = const Value.absent(),
+    this.statementPeriodEnd = const Value.absent(),
+    this.outstandingAmount = const Value.absent(),
+    this.isSettled = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CreditCardStatementsCompanion.insert({
+    required String id,
+    required String profileId,
+    required String accountId,
+    required String statementCycle,
+    required DateTime statementPeriodStart,
+    required DateTime statementPeriodEnd,
+    required int outstandingAmount,
+    this.isSettled = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       accountId = Value(accountId),
+       statementCycle = Value(statementCycle),
+       statementPeriodStart = Value(statementPeriodStart),
+       statementPeriodEnd = Value(statementPeriodEnd),
+       outstandingAmount = Value(outstandingAmount),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<CreditCardStatementData> custom({
+    Expression<String>? id,
+    Expression<String>? profileId,
+    Expression<String>? accountId,
+    Expression<String>? statementCycle,
+    Expression<DateTime>? statementPeriodStart,
+    Expression<DateTime>? statementPeriodEnd,
+    Expression<int>? outstandingAmount,
+    Expression<bool>? isSettled,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (accountId != null) 'account_id': accountId,
+      if (statementCycle != null) 'statement_cycle': statementCycle,
+      if (statementPeriodStart != null)
+        'statement_period_start': statementPeriodStart,
+      if (statementPeriodEnd != null)
+        'statement_period_end': statementPeriodEnd,
+      if (outstandingAmount != null) 'outstanding_amount': outstandingAmount,
+      if (isSettled != null) 'is_settled': isSettled,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CreditCardStatementsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? profileId,
+    Value<String>? accountId,
+    Value<String>? statementCycle,
+    Value<DateTime>? statementPeriodStart,
+    Value<DateTime>? statementPeriodEnd,
+    Value<int>? outstandingAmount,
+    Value<bool>? isSettled,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return CreditCardStatementsCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      accountId: accountId ?? this.accountId,
+      statementCycle: statementCycle ?? this.statementCycle,
+      statementPeriodStart: statementPeriodStart ?? this.statementPeriodStart,
+      statementPeriodEnd: statementPeriodEnd ?? this.statementPeriodEnd,
+      outstandingAmount: outstandingAmount ?? this.outstandingAmount,
+      isSettled: isSettled ?? this.isSettled,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
+    if (statementCycle.present) {
+      map['statement_cycle'] = Variable<String>(statementCycle.value);
+    }
+    if (statementPeriodStart.present) {
+      map['statement_period_start'] = Variable<DateTime>(
+        statementPeriodStart.value,
+      );
+    }
+    if (statementPeriodEnd.present) {
+      map['statement_period_end'] = Variable<DateTime>(
+        statementPeriodEnd.value,
+      );
+    }
+    if (outstandingAmount.present) {
+      map['outstanding_amount'] = Variable<int>(outstandingAmount.value);
+    }
+    if (isSettled.present) {
+      map['is_settled'] = Variable<bool>(isSettled.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreditCardStatementsCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('accountId: $accountId, ')
+          ..write('statementCycle: $statementCycle, ')
+          ..write('statementPeriodStart: $statementPeriodStart, ')
+          ..write('statementPeriodEnd: $statementPeriodEnd, ')
+          ..write('outstandingAmount: $outstandingAmount, ')
+          ..write('isSettled: $isSettled, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -9137,6 +9789,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $MergeConflictAuditsTable(this);
   late final $UnallocatedBudgetPoolsTable unallocatedBudgetPools =
       $UnallocatedBudgetPoolsTable(this);
+  late final $CreditCardStatementsTable creditCardStatements =
+      $CreditCardStatementsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -9157,6 +9811,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     notifications,
     mergeConflictAudits,
     unallocatedBudgetPools,
+    creditCardStatements,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -9424,6 +10079,34 @@ final class $$ProfilesTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _unallocatedBudgetPoolsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $CreditCardStatementsTable,
+    List<CreditCardStatementData>
+  >
+  _creditCardStatementsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.creditCardStatements,
+        aliasName: $_aliasNameGenerator(
+          db.profiles.id,
+          db.creditCardStatements.profileId,
+        ),
+      );
+
+  $$CreditCardStatementsTableProcessedTableManager
+  get creditCardStatementsRefs {
+    final manager = $$CreditCardStatementsTableTableManager(
+      $_db,
+      $_db.creditCardStatements,
+    ).filter((f) => f.profileId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _creditCardStatementsRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -9740,6 +10423,31 @@ class $$ProfilesTableFilterComposer
                     $removeJoinBuilderFromRootComposer,
               ),
         );
+    return f(composer);
+  }
+
+  Expression<bool> creditCardStatementsRefs(
+    Expression<bool> Function($$CreditCardStatementsTableFilterComposer f) f,
+  ) {
+    final $$CreditCardStatementsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.creditCardStatements,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CreditCardStatementsTableFilterComposer(
+            $db: $db,
+            $table: $db.creditCardStatements,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
@@ -10083,6 +10791,32 @@ class $$ProfilesTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> creditCardStatementsRefs<T extends Object>(
+    Expression<T> Function($$CreditCardStatementsTableAnnotationComposer a) f,
+  ) {
+    final $$CreditCardStatementsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.creditCardStatements,
+          getReferencedColumn: (t) => t.profileId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CreditCardStatementsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.creditCardStatements,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$ProfilesTableTableManager
@@ -10110,6 +10844,7 @@ class $$ProfilesTableTableManager
             bool notificationsRefs,
             bool mergeConflictAuditsRefs,
             bool unallocatedBudgetPoolsRefs,
+            bool creditCardStatementsRefs,
           })
         > {
   $$ProfilesTableTableManager(_$AppDatabase db, $ProfilesTable table)
@@ -10176,6 +10911,7 @@ class $$ProfilesTableTableManager
                 notificationsRefs = false,
                 mergeConflictAuditsRefs = false,
                 unallocatedBudgetPoolsRefs = false,
+                creditCardStatementsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -10192,6 +10928,7 @@ class $$ProfilesTableTableManager
                     if (notificationsRefs) db.notifications,
                     if (mergeConflictAuditsRefs) db.mergeConflictAudits,
                     if (unallocatedBudgetPoolsRefs) db.unallocatedBudgetPools,
+                    if (creditCardStatementsRefs) db.creditCardStatements,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -10423,6 +11160,27 @@ class $$ProfilesTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (creditCardStatementsRefs)
+                        await $_getPrefetchedData<
+                          ProfileData,
+                          $ProfilesTable,
+                          CreditCardStatementData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._creditCardStatementsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).creditCardStatementsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.profileId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -10455,6 +11213,7 @@ typedef $$ProfilesTableProcessedTableManager =
         bool notificationsRefs,
         bool mergeConflictAuditsRefs,
         bool unallocatedBudgetPoolsRefs,
+        bool creditCardStatementsRefs,
       })
     >;
 typedef $$AccountsTableCreateCompanionBuilder =
@@ -10536,6 +11295,34 @@ final class $$AccountsTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _transferAllocationsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $CreditCardStatementsTable,
+    List<CreditCardStatementData>
+  >
+  _creditCardStatementsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.creditCardStatements,
+        aliasName: $_aliasNameGenerator(
+          db.accounts.id,
+          db.creditCardStatements.accountId,
+        ),
+      );
+
+  $$CreditCardStatementsTableProcessedTableManager
+  get creditCardStatementsRefs {
+    final manager = $$CreditCardStatementsTableTableManager(
+      $_db,
+      $_db.creditCardStatements,
+    ).filter((f) => f.accountId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _creditCardStatementsRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -10656,6 +11443,31 @@ class $$AccountsTableFilterComposer
           }) => $$TransferAllocationsTableFilterComposer(
             $db: $db,
             $table: $db.transferAllocations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> creditCardStatementsRefs(
+    Expression<bool> Function($$CreditCardStatementsTableFilterComposer f) f,
+  ) {
+    final $$CreditCardStatementsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.creditCardStatements,
+      getReferencedColumn: (t) => t.accountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CreditCardStatementsTableFilterComposer(
+            $db: $db,
+            $table: $db.creditCardStatements,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -10870,6 +11682,32 @@ class $$AccountsTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> creditCardStatementsRefs<T extends Object>(
+    Expression<T> Function($$CreditCardStatementsTableAnnotationComposer a) f,
+  ) {
+    final $$CreditCardStatementsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.creditCardStatements,
+          getReferencedColumn: (t) => t.accountId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CreditCardStatementsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.creditCardStatements,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$AccountsTableTableManager
@@ -10885,7 +11723,11 @@ class $$AccountsTableTableManager
           $$AccountsTableUpdateCompanionBuilder,
           (AccountData, $$AccountsTableReferences),
           AccountData,
-          PrefetchHooks Function({bool profileId, bool transferAllocationsRefs})
+          PrefetchHooks Function({
+            bool profileId,
+            bool transferAllocationsRefs,
+            bool creditCardStatementsRefs,
+          })
         > {
   $$AccountsTableTableManager(_$AppDatabase db, $AccountsTable table)
     : super(
@@ -10975,11 +11817,16 @@ class $$AccountsTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({profileId = false, transferAllocationsRefs = false}) {
+              ({
+                profileId = false,
+                transferAllocationsRefs = false,
+                creditCardStatementsRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (transferAllocationsRefs) db.transferAllocations,
+                    if (creditCardStatementsRefs) db.creditCardStatements,
                   ],
                   addJoins:
                       <
@@ -11036,6 +11883,27 @@ class $$AccountsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (creditCardStatementsRefs)
+                        await $_getPrefetchedData<
+                          AccountData,
+                          $AccountsTable,
+                          CreditCardStatementData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$AccountsTableReferences
+                              ._creditCardStatementsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$AccountsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).creditCardStatementsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.accountId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -11056,7 +11924,11 @@ typedef $$AccountsTableProcessedTableManager =
       $$AccountsTableUpdateCompanionBuilder,
       (AccountData, $$AccountsTableReferences),
       AccountData,
-      PrefetchHooks Function({bool profileId, bool transferAllocationsRefs})
+      PrefetchHooks Function({
+        bool profileId,
+        bool transferAllocationsRefs,
+        bool creditCardStatementsRefs,
+      })
     >;
 typedef $$CategoriesTableCreateCompanionBuilder =
     CategoriesCompanion Function({
@@ -18407,6 +19279,537 @@ typedef $$UnallocatedBudgetPoolsTableProcessedTableManager =
       UnallocatedBudgetPoolData,
       PrefetchHooks Function({bool profileId})
     >;
+typedef $$CreditCardStatementsTableCreateCompanionBuilder =
+    CreditCardStatementsCompanion Function({
+      required String id,
+      required String profileId,
+      required String accountId,
+      required String statementCycle,
+      required DateTime statementPeriodStart,
+      required DateTime statementPeriodEnd,
+      required int outstandingAmount,
+      Value<bool> isSettled,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$CreditCardStatementsTableUpdateCompanionBuilder =
+    CreditCardStatementsCompanion Function({
+      Value<String> id,
+      Value<String> profileId,
+      Value<String> accountId,
+      Value<String> statementCycle,
+      Value<DateTime> statementPeriodStart,
+      Value<DateTime> statementPeriodEnd,
+      Value<int> outstandingAmount,
+      Value<bool> isSettled,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$CreditCardStatementsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $CreditCardStatementsTable,
+          CreditCardStatementData
+        > {
+  $$CreditCardStatementsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProfilesTable _profileIdTable(_$AppDatabase db) =>
+      db.profiles.createAlias(
+        $_aliasNameGenerator(db.creditCardStatements.profileId, db.profiles.id),
+      );
+
+  $$ProfilesTableProcessedTableManager get profileId {
+    final $_column = $_itemColumn<String>('profile_id')!;
+
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $AccountsTable _accountIdTable(_$AppDatabase db) =>
+      db.accounts.createAlias(
+        $_aliasNameGenerator(db.creditCardStatements.accountId, db.accounts.id),
+      );
+
+  $$AccountsTableProcessedTableManager get accountId {
+    final $_column = $_itemColumn<String>('account_id')!;
+
+    final manager = $$AccountsTableTableManager(
+      $_db,
+      $_db.accounts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CreditCardStatementsTableFilterComposer
+    extends Composer<_$AppDatabase, $CreditCardStatementsTable> {
+  $$CreditCardStatementsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get statementCycle => $composableBuilder(
+    column: $table.statementCycle,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get statementPeriodStart => $composableBuilder(
+    column: $table.statementPeriodStart,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get statementPeriodEnd => $composableBuilder(
+    column: $table.statementPeriodEnd,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get outstandingAmount => $composableBuilder(
+    column: $table.outstandingAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isSettled => $composableBuilder(
+    column: $table.isSettled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProfilesTableFilterComposer get profileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$AccountsTableFilterComposer get accountId {
+    final $$AccountsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AccountsTableFilterComposer(
+            $db: $db,
+            $table: $db.accounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CreditCardStatementsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CreditCardStatementsTable> {
+  $$CreditCardStatementsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get statementCycle => $composableBuilder(
+    column: $table.statementCycle,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get statementPeriodStart => $composableBuilder(
+    column: $table.statementPeriodStart,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get statementPeriodEnd => $composableBuilder(
+    column: $table.statementPeriodEnd,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get outstandingAmount => $composableBuilder(
+    column: $table.outstandingAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isSettled => $composableBuilder(
+    column: $table.isSettled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProfilesTableOrderingComposer get profileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$AccountsTableOrderingComposer get accountId {
+    final $$AccountsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AccountsTableOrderingComposer(
+            $db: $db,
+            $table: $db.accounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CreditCardStatementsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CreditCardStatementsTable> {
+  $$CreditCardStatementsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get statementCycle => $composableBuilder(
+    column: $table.statementCycle,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get statementPeriodStart => $composableBuilder(
+    column: $table.statementPeriodStart,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get statementPeriodEnd => $composableBuilder(
+    column: $table.statementPeriodEnd,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get outstandingAmount => $composableBuilder(
+    column: $table.outstandingAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isSettled =>
+      $composableBuilder(column: $table.isSettled, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$ProfilesTableAnnotationComposer get profileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$AccountsTableAnnotationComposer get accountId {
+    final $$AccountsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AccountsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.accounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CreditCardStatementsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CreditCardStatementsTable,
+          CreditCardStatementData,
+          $$CreditCardStatementsTableFilterComposer,
+          $$CreditCardStatementsTableOrderingComposer,
+          $$CreditCardStatementsTableAnnotationComposer,
+          $$CreditCardStatementsTableCreateCompanionBuilder,
+          $$CreditCardStatementsTableUpdateCompanionBuilder,
+          (CreditCardStatementData, $$CreditCardStatementsTableReferences),
+          CreditCardStatementData,
+          PrefetchHooks Function({bool profileId, bool accountId})
+        > {
+  $$CreditCardStatementsTableTableManager(
+    _$AppDatabase db,
+    $CreditCardStatementsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CreditCardStatementsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CreditCardStatementsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CreditCardStatementsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<String> accountId = const Value.absent(),
+                Value<String> statementCycle = const Value.absent(),
+                Value<DateTime> statementPeriodStart = const Value.absent(),
+                Value<DateTime> statementPeriodEnd = const Value.absent(),
+                Value<int> outstandingAmount = const Value.absent(),
+                Value<bool> isSettled = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreditCardStatementsCompanion(
+                id: id,
+                profileId: profileId,
+                accountId: accountId,
+                statementCycle: statementCycle,
+                statementPeriodStart: statementPeriodStart,
+                statementPeriodEnd: statementPeriodEnd,
+                outstandingAmount: outstandingAmount,
+                isSettled: isSettled,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String profileId,
+                required String accountId,
+                required String statementCycle,
+                required DateTime statementPeriodStart,
+                required DateTime statementPeriodEnd,
+                required int outstandingAmount,
+                Value<bool> isSettled = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CreditCardStatementsCompanion.insert(
+                id: id,
+                profileId: profileId,
+                accountId: accountId,
+                statementCycle: statementCycle,
+                statementPeriodStart: statementPeriodStart,
+                statementPeriodEnd: statementPeriodEnd,
+                outstandingAmount: outstandingAmount,
+                isSettled: isSettled,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$CreditCardStatementsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({profileId = false, accountId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (profileId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.profileId,
+                                referencedTable:
+                                    $$CreditCardStatementsTableReferences
+                                        ._profileIdTable(db),
+                                referencedColumn:
+                                    $$CreditCardStatementsTableReferences
+                                        ._profileIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (accountId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.accountId,
+                                referencedTable:
+                                    $$CreditCardStatementsTableReferences
+                                        ._accountIdTable(db),
+                                referencedColumn:
+                                    $$CreditCardStatementsTableReferences
+                                        ._accountIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CreditCardStatementsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CreditCardStatementsTable,
+      CreditCardStatementData,
+      $$CreditCardStatementsTableFilterComposer,
+      $$CreditCardStatementsTableOrderingComposer,
+      $$CreditCardStatementsTableAnnotationComposer,
+      $$CreditCardStatementsTableCreateCompanionBuilder,
+      $$CreditCardStatementsTableUpdateCompanionBuilder,
+      (CreditCardStatementData, $$CreditCardStatementsTableReferences),
+      CreditCardStatementData,
+      PrefetchHooks Function({bool profileId, bool accountId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -18446,4 +19849,6 @@ class $AppDatabaseManager {
         _db,
         _db.unallocatedBudgetPools,
       );
+  $$CreditCardStatementsTableTableManager get creditCardStatements =>
+      $$CreditCardStatementsTableTableManager(_db, _db.creditCardStatements);
 }
