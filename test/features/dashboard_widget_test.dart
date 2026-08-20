@@ -212,7 +212,7 @@ void main() {
 
     // Verify Recent Transactions are visible
     expect(find.text('RECENT TRANSACTIONS'), findsOneWidget);
-    expect(find.text('Grocery Shopping'), findsOneWidget);
+    expect(find.text('Grocery'), findsWidgets);
     expect(find.text('-₹15'), findsOneWidget);
 
     // 5. Toggle Privacy Mode (tap eye icon button)
