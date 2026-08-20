@@ -8,6 +8,7 @@ class UnallocatedBudgetPool {
   final int year;
   final int amount; // minor units
   final String currency;
+  final int carriedForwardAmount;
 
   const UnallocatedBudgetPool({
     required this.id,
@@ -16,6 +17,7 @@ class UnallocatedBudgetPool {
     required this.year,
     required this.amount,
     required this.currency,
+    this.carriedForwardAmount = 0,
   });
 
   /// Factory method to enforce "Always Valid" UnallocatedBudgetPool values.
@@ -26,6 +28,7 @@ class UnallocatedBudgetPool {
     required int year,
     required int amount,
     required String currency,
+    int carriedForwardAmount = 0,
   }) {
     if (id.trim().isEmpty) {
       return const FailureResult(ValidationFailure('Pool ID cannot be empty'));
@@ -59,6 +62,7 @@ class UnallocatedBudgetPool {
         year: year,
         amount: amount,
         currency: currency.trim().toUpperCase(),
+        carriedForwardAmount: carriedForwardAmount,
       ),
     );
   }
@@ -70,6 +74,7 @@ class UnallocatedBudgetPool {
     'year': year,
     'amount': amount,
     'currency': currency,
+    'carriedForwardAmount': carriedForwardAmount,
   };
 
   factory UnallocatedBudgetPool.fromJson(Map<String, dynamic> json) =>
@@ -80,5 +85,6 @@ class UnallocatedBudgetPool {
         year: json['year'] as int,
         amount: json['amount'] as int,
         currency: json['currency'] as String,
+        carriedForwardAmount: json['carriedForwardAmount'] as int? ?? 0,
       );
 }

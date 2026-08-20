@@ -40,6 +40,7 @@ class BudgetRepositoryImpl implements BudgetRepository {
       year: data.year,
       amount: data.amount,
       currency: data.currency,
+      carriedForwardAmount: data.carriedForwardAmount,
     ).fold(
       (success) => success,
       (failure) => throw Exception(
@@ -147,6 +148,7 @@ class BudgetRepositoryImpl implements BudgetRepository {
         year: Value(pool.year),
         amount: Value(pool.amount),
         currency: Value(pool.currency),
+        carriedForwardAmount: Value(pool.carriedForwardAmount),
       );
       await _database
           .into(_database.unallocatedBudgetPools)
@@ -285,7 +287,8 @@ class BudgetRepositoryImpl implements BudgetRepository {
             '${profileId}_pool_${targetYear}_${targetMonth}_$uppercaseCurrency';
 
         if (poolResult != null) {
-          targetAmount += poolResult.amount;
+          targetAmount =
+              poolResult.amount - poolResult.carriedForwardAmount + totalUnused;
           poolId = poolResult.id;
         }
 
@@ -297,6 +300,7 @@ class BudgetRepositoryImpl implements BudgetRepository {
           year: Value(targetYear),
           amount: Value(targetAmount),
           currency: Value(uppercaseCurrency),
+          carriedForwardAmount: Value(totalUnused),
         );
         await _database
             .into(_database.unallocatedBudgetPools)
