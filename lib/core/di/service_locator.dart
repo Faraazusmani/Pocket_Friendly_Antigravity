@@ -13,6 +13,8 @@ import '../../features/profiles/data/repositories/profile_repository_impl.dart';
 import '../../features/profiles/domain/repositories/profile_repository.dart';
 import '../../features/transactions/data/repositories/transaction_repository_impl.dart';
 import '../../features/transactions/domain/repositories/transaction_repository.dart';
+import '../../features/recurring/data/repositories/recurring_repository_impl.dart';
+import '../../features/recurring/domain/repositories/recurring_repository.dart';
 import '../platform/file_service.dart';
 import '../platform/haptic_service.dart';
 import '../platform/notification_service.dart';
@@ -56,7 +58,6 @@ Future<void> initServiceLocator() async {
     logger.error(
       'CRITICAL: Failed to load database encryption key during DI initialization: ${failure.message}',
     );
-    // Fallback key to allow initialization, in a production setup this would prompt recovery
     return List<int>.filled(32, 0);
   });
 
@@ -83,6 +84,9 @@ Future<void> initServiceLocator() async {
   );
   sl.registerLazySingleton<BudgetRepository>(
     () => BudgetRepositoryImpl(sl<AppDatabase>()),
+  );
+  sl.registerLazySingleton<RecurringRepository>(
+    () => RecurringRepositoryImpl(sl<AppDatabase>()),
   );
 
   logger.info(
