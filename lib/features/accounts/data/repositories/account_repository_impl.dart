@@ -130,25 +130,43 @@ class AccountRepositoryImpl implements AccountRepository {
   @override
   Future<Result<void, Failure>> saveAccount(Account account) async {
     try {
-      final companion = AccountsCompanion(
-        id: Value(account.id),
-        profileId: Value(account.profileId),
-        type: Value(account.type.name),
-        name: Value(account.name),
-        currency: Value(account.currency),
-        icon: Value(account.icon),
-        openingBalance: Value(account.openingBalance),
-        status: Value(account.status.name),
-        createdAt: Value(account.createdAt),
-        updatedAt: Value(account.updatedAt),
-        archivedAt: Value(account.archivedAt),
-        creditLimit: Value(account.creditLimit),
-        openingOutstanding: Value(account.openingOutstanding),
-        billGenerationDay: Value(account.billGenerationDay),
-      );
-      await _database
-          .into(_database.accounts)
-          .insertOnConflictUpdate(companion);
+      await _database.transaction(() async {
+        final companion = AccountsCompanion(
+          id: Value(account.id),
+          profileId: Value(account.profileId),
+          type: Value(account.type.name),
+          name: Value(account.name),
+          currency: Value(account.currency),
+          icon: Value(account.icon),
+          openingBalance: Value(account.openingBalance),
+          status: Value(account.status.name),
+          createdAt: Value(account.createdAt),
+          updatedAt: Value(account.updatedAt),
+          archivedAt: Value(account.archivedAt),
+          creditLimit: Value(account.creditLimit),
+          openingOutstanding: Value(account.openingOutstanding),
+          billGenerationDay: Value(account.billGenerationDay),
+        );
+        await _database
+            .into(_database.accounts)
+            .insertOnConflictUpdate(companion);
+
+        final pmCompanion = PaymentModesCompanion(
+          id: Value(account.id),
+          profileId: Value(account.profileId),
+          name: Value(account.name),
+          applicableAccountTypes: Value(account.type.name),
+          isDefault: const Value(false),
+          isSystem: const Value(true),
+          status: Value(account.status.name),
+          createdAt: Value(account.createdAt),
+          updatedAt: Value(account.updatedAt),
+          archivedAt: Value(account.archivedAt),
+        );
+        await _database
+            .into(_database.paymentModes)
+            .insertOnConflictUpdate(pmCompanion);
+      });
       return const Success(null);
     } catch (e) {
       return FailureResult(DatabaseFailure('Failed to save account', e));

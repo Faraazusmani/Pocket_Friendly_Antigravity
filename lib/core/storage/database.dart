@@ -23,7 +23,8 @@ class Profiles extends Table {
 @DataClassName('AccountData')
 class Accounts extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   TextColumn get type => text()(); // Bank, Cash, Credit Card
   TextColumn get name => text()();
   TextColumn get currency => text()();
@@ -47,7 +48,8 @@ class Accounts extends Table {
 @DataClassName('CategoryData')
 class Categories extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   TextColumn get parentCategoryId =>
       text().nullable().references(Categories, #id)();
   TextColumn get name => text()();
@@ -67,7 +69,8 @@ class Categories extends Table {
 @DataClassName('TagData')
 class Tags extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   TextColumn get name => text()();
   TextColumn get status => text()(); // active, archived
   DateTimeColumn get createdAt => dateTime()();
@@ -82,7 +85,8 @@ class Tags extends Table {
 @DataClassName('PaymentModeData')
 class PaymentModes extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   TextColumn get name => text()();
   TextColumn get applicableAccountTypes =>
       text()(); // comma-separated list of compatible account types
@@ -101,7 +105,8 @@ class PaymentModes extends Table {
 @DataClassName('GoalData')
 class Goals extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   TextColumn get categoryId => text().references(Categories, #id)();
   TextColumn get goalType => text()(); // standard, EMI, SIP
   TextColumn get name => text()();
@@ -123,7 +128,8 @@ class Goals extends Table {
 @DataClassName('TransactionData')
 class Transactions extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   TextColumn get type => text()(); // Expense, Income, Transfer
   TextColumn get subtype =>
       text().nullable()(); // balanceAdjustment, creditCardSettlement
@@ -178,7 +184,8 @@ class TransferAllocations extends Table {
 @DataClassName('BudgetData')
 class Budgets extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   TextColumn get categoryId => text().references(Categories, #id)();
   IntColumn get month => integer()(); // 1-12
   IntColumn get year => integer()();
@@ -196,7 +203,8 @@ class Budgets extends Table {
 @DataClassName('RecurringTransactionRuleData')
 class RecurringTransactionRules extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   TextColumn get transactionTemplate => text()(); // JSON string template
   TextColumn get frequency => text()(); // daily, weekly, monthly, yearly
   IntColumn get dayOfPeriod => integer()();
@@ -241,7 +249,8 @@ class RecurringOccurrences extends Table {
 @DataClassName('NotificationData')
 class Notifications extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   TextColumn get type => text()();
   DateTimeColumn get scheduledAt => dateTime()();
   TextColumn get payload => text().nullable()();
@@ -258,7 +267,8 @@ class Notifications extends Table {
 @DataClassName('MergeConflictAuditData')
 class MergeConflictAudits extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   TextColumn get entityType => text()();
   TextColumn get entityId => text()();
   TextColumn get localPayload => text()();
@@ -273,11 +283,14 @@ class MergeConflictAudits extends Table {
 @DataClassName('UnallocatedBudgetPoolData')
 class UnallocatedBudgetPools extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   IntColumn get month => integer()(); // 1-12
   IntColumn get year => integer()();
   IntColumn get amount => integer()(); // minor units
   TextColumn get currency => text()();
+  IntColumn get carriedForwardAmount =>
+      integer().withDefault(const Constant(0))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -286,7 +299,8 @@ class UnallocatedBudgetPools extends Table {
 @DataClassName('CreditCardStatementData')
 class CreditCardStatements extends Table {
   TextColumn get id => text()();
-  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get profileId =>
+      text().references(Profiles, #id, onDelete: KeyAction.cascade)();
   TextColumn get accountId => text().references(Accounts, #id)();
   TextColumn get statementCycle => text()(); // e.g. "2026-08"
   DateTimeColumn get statementPeriodStart => dateTime()();
@@ -330,6 +344,28 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
+      // Ensure matching PaymentMode exists whenever an Account is created
+      await customStatement('''
+        CREATE TRIGGER IF NOT EXISTS insert_payment_mode_on_account_insert
+        AFTER INSERT ON accounts
+        BEGIN
+          INSERT OR IGNORE INTO payment_modes (id, profile_id, name, applicable_account_types, is_default, is_system, status, created_at, updated_at, archived_at)
+          VALUES (new.id, new.profile_id, new.name, new.type, 0, 1, new.status, new.created_at, new.updated_at, new.archived_at);
+        END;
+      ''');
+      // Ensure PaymentMode stays in sync when an Account is updated
+      await customStatement('''
+        CREATE TRIGGER IF NOT EXISTS update_payment_mode_on_account_update
+        AFTER UPDATE ON accounts
+        BEGIN
+          UPDATE payment_modes SET
+            name = new.name,
+            status = new.status,
+            updated_at = new.updated_at,
+            archived_at = new.archived_at
+          WHERE id = new.id;
+        END;
+      ''');
     },
     onUpgrade: (m, from, to) async {
       // Future migration pathways will go here.
@@ -349,6 +385,7 @@ QueryExecutor openEncryptedConnection(
             .map((b) => b.toRadixString(16).padLeft(2, '0'))
             .join();
         rawDb.execute("PRAGMA key = \"x'$keyHex'\";");
+        rawDb.execute("PRAGMA foreign_keys = ON;");
       },
     );
   }
@@ -363,6 +400,7 @@ QueryExecutor openEncryptedConnection(
             .map((b) => b.toRadixString(16).padLeft(2, '0'))
             .join();
         rawDb.execute("PRAGMA key = \"x'$keyHex'\";");
+        rawDb.execute("PRAGMA foreign_keys = ON;");
       },
     );
   });

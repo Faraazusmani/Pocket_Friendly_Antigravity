@@ -280,7 +280,7 @@ class ImportExportService {
         for (final item in paymentModes) {
           await database
               .into(database.paymentModes)
-              .insert(PaymentModeData.fromJson(item as Map<String, dynamic>));
+              .insert(PaymentModeData.fromJson(item as Map<String, dynamic>), mode: InsertMode.insertOrReplace);
         }
 
         final goals = data['goals'] as List;
@@ -655,7 +655,7 @@ class ImportExportService {
           final pm = PaymentModeData.fromJson(item as Map<String, dynamic>);
           if (pm.profileId == oldProfileId) {
             final remapped = pm.copyWith(profileId: newProfileId);
-            await database.into(database.paymentModes).insert(remapped);
+            await database.into(database.paymentModes).insert(remapped, mode: InsertMode.insertOrReplace);
           }
         }
 

@@ -395,7 +395,7 @@ class $AccountsTable extends Accounts
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
@@ -1219,7 +1219,7 @@ class $CategoriesTable extends Categories
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _parentCategoryIdMeta = const VerificationMeta(
@@ -1892,7 +1892,7 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, TagData> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
@@ -2358,7 +2358,7 @@ class $PaymentModesTable extends PaymentModes
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
@@ -2983,7 +2983,7 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalData> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _categoryIdMeta = const VerificationMeta(
@@ -3802,7 +3802,7 @@ class $TransactionsTable extends Transactions
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
@@ -5586,7 +5586,7 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, BudgetData> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _categoryIdMeta = const VerificationMeta(
@@ -6209,7 +6209,7 @@ class $RecurringTransactionRulesTable extends RecurringTransactionRules
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _transactionTemplateMeta =
@@ -7618,7 +7618,7 @@ class $NotificationsTable extends Notifications
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
@@ -8192,7 +8192,7 @@ class $MergeConflictAuditsTable extends MergeConflictAudits
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _entityTypeMeta = const VerificationMeta(
@@ -8726,7 +8726,7 @@ class $UnallocatedBudgetPoolsTable extends UnallocatedBudgetPools
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _monthMeta = const VerificationMeta('month');
@@ -8767,6 +8767,17 @@ class $UnallocatedBudgetPoolsTable extends UnallocatedBudgetPools
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _carriedForwardAmountMeta =
+      const VerificationMeta('carriedForwardAmount');
+  @override
+  late final GeneratedColumn<int> carriedForwardAmount = GeneratedColumn<int>(
+    'carried_forward_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -8775,6 +8786,7 @@ class $UnallocatedBudgetPoolsTable extends UnallocatedBudgetPools
     year,
     amount,
     currency,
+    carriedForwardAmount,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -8833,6 +8845,15 @@ class $UnallocatedBudgetPoolsTable extends UnallocatedBudgetPools
     } else if (isInserting) {
       context.missing(_currencyMeta);
     }
+    if (data.containsKey('carried_forward_amount')) {
+      context.handle(
+        _carriedForwardAmountMeta,
+        carriedForwardAmount.isAcceptableOrUnknown(
+          data['carried_forward_amount']!,
+          _carriedForwardAmountMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -8869,6 +8890,10 @@ class $UnallocatedBudgetPoolsTable extends UnallocatedBudgetPools
         DriftSqlType.string,
         data['${effectivePrefix}currency'],
       )!,
+      carriedForwardAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}carried_forward_amount'],
+      )!,
     );
   }
 
@@ -8886,6 +8911,7 @@ class UnallocatedBudgetPoolData extends DataClass
   final int year;
   final int amount;
   final String currency;
+  final int carriedForwardAmount;
   const UnallocatedBudgetPoolData({
     required this.id,
     required this.profileId,
@@ -8893,6 +8919,7 @@ class UnallocatedBudgetPoolData extends DataClass
     required this.year,
     required this.amount,
     required this.currency,
+    required this.carriedForwardAmount,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -8903,6 +8930,7 @@ class UnallocatedBudgetPoolData extends DataClass
     map['year'] = Variable<int>(year);
     map['amount'] = Variable<int>(amount);
     map['currency'] = Variable<String>(currency);
+    map['carried_forward_amount'] = Variable<int>(carriedForwardAmount);
     return map;
   }
 
@@ -8914,6 +8942,7 @@ class UnallocatedBudgetPoolData extends DataClass
       year: Value(year),
       amount: Value(amount),
       currency: Value(currency),
+      carriedForwardAmount: Value(carriedForwardAmount),
     );
   }
 
@@ -8929,6 +8958,9 @@ class UnallocatedBudgetPoolData extends DataClass
       year: serializer.fromJson<int>(json['year']),
       amount: serializer.fromJson<int>(json['amount']),
       currency: serializer.fromJson<String>(json['currency']),
+      carriedForwardAmount: serializer.fromJson<int>(
+        json['carriedForwardAmount'],
+      ),
     );
   }
   @override
@@ -8941,6 +8973,7 @@ class UnallocatedBudgetPoolData extends DataClass
       'year': serializer.toJson<int>(year),
       'amount': serializer.toJson<int>(amount),
       'currency': serializer.toJson<String>(currency),
+      'carriedForwardAmount': serializer.toJson<int>(carriedForwardAmount),
     };
   }
 
@@ -8951,6 +8984,7 @@ class UnallocatedBudgetPoolData extends DataClass
     int? year,
     int? amount,
     String? currency,
+    int? carriedForwardAmount,
   }) => UnallocatedBudgetPoolData(
     id: id ?? this.id,
     profileId: profileId ?? this.profileId,
@@ -8958,6 +8992,7 @@ class UnallocatedBudgetPoolData extends DataClass
     year: year ?? this.year,
     amount: amount ?? this.amount,
     currency: currency ?? this.currency,
+    carriedForwardAmount: carriedForwardAmount ?? this.carriedForwardAmount,
   );
   UnallocatedBudgetPoolData copyWithCompanion(
     UnallocatedBudgetPoolsCompanion data,
@@ -8969,6 +9004,9 @@ class UnallocatedBudgetPoolData extends DataClass
       year: data.year.present ? data.year.value : this.year,
       amount: data.amount.present ? data.amount.value : this.amount,
       currency: data.currency.present ? data.currency.value : this.currency,
+      carriedForwardAmount: data.carriedForwardAmount.present
+          ? data.carriedForwardAmount.value
+          : this.carriedForwardAmount,
     );
   }
 
@@ -8980,13 +9018,22 @@ class UnallocatedBudgetPoolData extends DataClass
           ..write('month: $month, ')
           ..write('year: $year, ')
           ..write('amount: $amount, ')
-          ..write('currency: $currency')
+          ..write('currency: $currency, ')
+          ..write('carriedForwardAmount: $carriedForwardAmount')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, profileId, month, year, amount, currency);
+  int get hashCode => Object.hash(
+    id,
+    profileId,
+    month,
+    year,
+    amount,
+    currency,
+    carriedForwardAmount,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -8996,7 +9043,8 @@ class UnallocatedBudgetPoolData extends DataClass
           other.month == this.month &&
           other.year == this.year &&
           other.amount == this.amount &&
-          other.currency == this.currency);
+          other.currency == this.currency &&
+          other.carriedForwardAmount == this.carriedForwardAmount);
 }
 
 class UnallocatedBudgetPoolsCompanion
@@ -9007,6 +9055,7 @@ class UnallocatedBudgetPoolsCompanion
   final Value<int> year;
   final Value<int> amount;
   final Value<String> currency;
+  final Value<int> carriedForwardAmount;
   final Value<int> rowid;
   const UnallocatedBudgetPoolsCompanion({
     this.id = const Value.absent(),
@@ -9015,6 +9064,7 @@ class UnallocatedBudgetPoolsCompanion
     this.year = const Value.absent(),
     this.amount = const Value.absent(),
     this.currency = const Value.absent(),
+    this.carriedForwardAmount = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   UnallocatedBudgetPoolsCompanion.insert({
@@ -9024,6 +9074,7 @@ class UnallocatedBudgetPoolsCompanion
     required int year,
     required int amount,
     required String currency,
+    this.carriedForwardAmount = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        profileId = Value(profileId),
@@ -9038,6 +9089,7 @@ class UnallocatedBudgetPoolsCompanion
     Expression<int>? year,
     Expression<int>? amount,
     Expression<String>? currency,
+    Expression<int>? carriedForwardAmount,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -9047,6 +9099,8 @@ class UnallocatedBudgetPoolsCompanion
       if (year != null) 'year': year,
       if (amount != null) 'amount': amount,
       if (currency != null) 'currency': currency,
+      if (carriedForwardAmount != null)
+        'carried_forward_amount': carriedForwardAmount,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -9058,6 +9112,7 @@ class UnallocatedBudgetPoolsCompanion
     Value<int>? year,
     Value<int>? amount,
     Value<String>? currency,
+    Value<int>? carriedForwardAmount,
     Value<int>? rowid,
   }) {
     return UnallocatedBudgetPoolsCompanion(
@@ -9067,6 +9122,7 @@ class UnallocatedBudgetPoolsCompanion
       year: year ?? this.year,
       amount: amount ?? this.amount,
       currency: currency ?? this.currency,
+      carriedForwardAmount: carriedForwardAmount ?? this.carriedForwardAmount,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -9092,6 +9148,9 @@ class UnallocatedBudgetPoolsCompanion
     if (currency.present) {
       map['currency'] = Variable<String>(currency.value);
     }
+    if (carriedForwardAmount.present) {
+      map['carried_forward_amount'] = Variable<int>(carriedForwardAmount.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -9107,6 +9166,7 @@ class UnallocatedBudgetPoolsCompanion
           ..write('year: $year, ')
           ..write('amount: $amount, ')
           ..write('currency: $currency, ')
+          ..write('carriedForwardAmount: $carriedForwardAmount, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -9139,7 +9199,7 @@ class $CreditCardStatementsTable extends CreditCardStatements
     type: DriftSqlType.string,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES profiles (id)',
+      'REFERENCES profiles (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _accountIdMeta = const VerificationMeta(
@@ -9817,6 +9877,48 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
     WritePropagation(
       on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('accounts', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('categories', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('tags', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('payment_modes', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('goals', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('transactions', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
         'transactions',
         limitUpdateKind: UpdateKind.delete,
       ),
@@ -9828,6 +9930,52 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('transfer_allocations', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('budgets', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [
+        TableUpdate('recurring_transaction_rules', kind: UpdateKind.delete),
+      ],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('notifications', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('merge_conflict_audits', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [
+        TableUpdate('unallocated_budget_pools', kind: UpdateKind.delete),
+      ],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('credit_card_statements', kind: UpdateKind.delete)],
     ),
   ]);
 }
@@ -18924,6 +19072,7 @@ typedef $$UnallocatedBudgetPoolsTableCreateCompanionBuilder =
       required int year,
       required int amount,
       required String currency,
+      Value<int> carriedForwardAmount,
       Value<int> rowid,
     });
 typedef $$UnallocatedBudgetPoolsTableUpdateCompanionBuilder =
@@ -18934,6 +19083,7 @@ typedef $$UnallocatedBudgetPoolsTableUpdateCompanionBuilder =
       Value<int> year,
       Value<int> amount,
       Value<String> currency,
+      Value<int> carriedForwardAmount,
       Value<int> rowid,
     });
 
@@ -19007,6 +19157,11 @@ class $$UnallocatedBudgetPoolsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get carriedForwardAmount => $composableBuilder(
+    column: $table.carriedForwardAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$ProfilesTableFilterComposer get profileId {
     final $$ProfilesTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -19065,6 +19220,11 @@ class $$UnallocatedBudgetPoolsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get carriedForwardAmount => $composableBuilder(
+    column: $table.carriedForwardAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$ProfilesTableOrderingComposer get profileId {
     final $$ProfilesTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -19112,6 +19272,11 @@ class $$UnallocatedBudgetPoolsTableAnnotationComposer
 
   GeneratedColumn<String> get currency =>
       $composableBuilder(column: $table.currency, builder: (column) => column);
+
+  GeneratedColumn<int> get carriedForwardAmount => $composableBuilder(
+    column: $table.carriedForwardAmount,
+    builder: (column) => column,
+  );
 
   $$ProfilesTableAnnotationComposer get profileId {
     final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
@@ -19182,6 +19347,7 @@ class $$UnallocatedBudgetPoolsTableTableManager
                 Value<int> year = const Value.absent(),
                 Value<int> amount = const Value.absent(),
                 Value<String> currency = const Value.absent(),
+                Value<int> carriedForwardAmount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UnallocatedBudgetPoolsCompanion(
                 id: id,
@@ -19190,6 +19356,7 @@ class $$UnallocatedBudgetPoolsTableTableManager
                 year: year,
                 amount: amount,
                 currency: currency,
+                carriedForwardAmount: carriedForwardAmount,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -19200,6 +19367,7 @@ class $$UnallocatedBudgetPoolsTableTableManager
                 required int year,
                 required int amount,
                 required String currency,
+                Value<int> carriedForwardAmount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UnallocatedBudgetPoolsCompanion.insert(
                 id: id,
@@ -19208,6 +19376,7 @@ class $$UnallocatedBudgetPoolsTableTableManager
                 year: year,
                 amount: amount,
                 currency: currency,
+                carriedForwardAmount: carriedForwardAmount,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

@@ -21,6 +21,9 @@ class FinancialEngine {
       for (final ta in tx.transferAllocations) {
         if (ta.endpointType == EndpointType.account &&
             ta.accountId == account.id) {
+          if (ta.currency.toUpperCase() != account.currency.toUpperCase()) {
+            continue;
+          }
           if (ta.role == AllocationRole.destination) {
             balance += ta.amount;
           } else if (ta.role == AllocationRole.source) {
@@ -49,6 +52,9 @@ class FinancialEngine {
       for (final ta in tx.transferAllocations) {
         if (ta.endpointType == EndpointType.account &&
             ta.accountId == card.id) {
+          if (ta.currency.toUpperCase() != card.currency.toUpperCase()) {
+            continue;
+          }
           if (ta.role == AllocationRole.source) {
             outstanding += ta.amount;
           } else if (ta.role == AllocationRole.destination) {
@@ -84,12 +90,18 @@ class FinancialEngine {
       if (tx.type == TransactionType.expense) {
         for (final ca in tx.categoryAllocations) {
           if (ca.categoryId == goal.categoryId) {
+            if (ca.currency.toUpperCase() != goal.currency.toUpperCase()) {
+              continue;
+            }
             balance += ca.amount;
           }
         }
       } else if (tx.type == TransactionType.transfer) {
         for (final ta in tx.transferAllocations) {
           if (ta.endpointType == EndpointType.goal && ta.goalId == goal.id) {
+            if (ta.currency.toUpperCase() != goal.currency.toUpperCase()) {
+              continue;
+            }
             if (ta.role == AllocationRole.destination) {
               balance += ta.amount;
             } else if (ta.role == AllocationRole.source) {

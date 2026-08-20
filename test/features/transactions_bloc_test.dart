@@ -116,7 +116,7 @@ void main() {
       isA<TransactionFormMetadataLoaded>()
           .having((s) => s.accounts.length, 'accounts length', 1)
           .having((s) => s.categories.length, 'categories length', 1)
-          .having((s) => s.paymentModes.length, 'payment modes length', 1)
+          .having((s) => s.paymentModes.length, 'payment modes length', 2)
           .having((s) => s.profileId, 'profileId', 'p1')
           .having((s) => s.defaultCurrency, 'defaultCurrency', 'INR'),
     ],

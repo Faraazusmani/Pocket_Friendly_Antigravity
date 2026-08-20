@@ -12,6 +12,7 @@ import 'package:pocket_friendly/features/accounts/domain/repositories/account_re
 import 'package:pocket_friendly/features/accounts/data/repositories/account_repository_impl.dart';
 import 'package:pocket_friendly/features/categories/domain/repositories/category_repository.dart';
 import 'package:pocket_friendly/features/categories/data/repositories/category_repository_impl.dart';
+import 'package:pocket_friendly/features/categories/domain/category.dart';
 import 'package:pocket_friendly/features/goals/domain/goal.dart';
 import 'package:pocket_friendly/features/goals/domain/repositories/goal_repository.dart';
 import 'package:pocket_friendly/features/goals/data/repositories/goal_repository_impl.dart';
@@ -76,6 +77,19 @@ void main() {
       updatedAt: now,
     ).successOrNull!;
     await profileRepo.saveProfile(profile);
+
+    // Insert Category first (required for Goals categoryId foreign key constraint)
+    final category = Category.create(
+      id: 'cat-trip',
+      profileId: 'p1',
+      name: 'Europe Trip',
+      icon: 'plane',
+      status: CategoryStatus.active,
+      isSystem: false,
+      createdAt: now,
+      updatedAt: now,
+    ).successOrNull!;
+    await categoryRepo.saveCategory(category);
 
     // Insert Goal
     final goal = Goal.create(

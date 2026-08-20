@@ -81,6 +81,22 @@ void main() {
       ).successOrNull!;
       await categoryRepo.saveCategory(child);
 
+      // Insert Account first (required for TransferAllocations and Transactions)
+      await database.into(database.accounts).insert(
+        AccountData(
+          id: 'pm-cash',
+          profileId: 'p1',
+          type: 'Cash',
+          name: 'Cash Account',
+          currency: 'INR',
+          icon: 'cash',
+          openingBalance: 100000,
+          status: 'active',
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+
       // 3. Create Transaction in subcategory Grocery (1,500 minor units = 15 INR)
       final alloc = CategoryAllocation.create(
         id: 'alloc-1',
