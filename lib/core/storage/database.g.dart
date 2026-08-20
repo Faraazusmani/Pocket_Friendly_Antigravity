@@ -8700,6 +8700,419 @@ class MergeConflictAuditsCompanion
   }
 }
 
+class $UnallocatedBudgetPoolsTable extends UnallocatedBudgetPools
+    with TableInfo<$UnallocatedBudgetPoolsTable, UnallocatedBudgetPoolData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UnallocatedBudgetPoolsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id)',
+    ),
+  );
+  static const VerificationMeta _monthMeta = const VerificationMeta('month');
+  @override
+  late final GeneratedColumn<int> month = GeneratedColumn<int>(
+    'month',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _yearMeta = const VerificationMeta('year');
+  @override
+  late final GeneratedColumn<int> year = GeneratedColumn<int>(
+    'year',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyMeta = const VerificationMeta(
+    'currency',
+  );
+  @override
+  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
+    'currency',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    month,
+    year,
+    amount,
+    currency,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'unallocated_budget_pools';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UnallocatedBudgetPoolData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('month')) {
+      context.handle(
+        _monthMeta,
+        month.isAcceptableOrUnknown(data['month']!, _monthMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_monthMeta);
+    }
+    if (data.containsKey('year')) {
+      context.handle(
+        _yearMeta,
+        year.isAcceptableOrUnknown(data['year']!, _yearMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_yearMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('currency')) {
+      context.handle(
+        _currencyMeta,
+        currency.isAcceptableOrUnknown(data['currency']!, _currencyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UnallocatedBudgetPoolData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UnallocatedBudgetPoolData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      month: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}month'],
+      )!,
+      year: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}year'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount'],
+      )!,
+      currency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency'],
+      )!,
+    );
+  }
+
+  @override
+  $UnallocatedBudgetPoolsTable createAlias(String alias) {
+    return $UnallocatedBudgetPoolsTable(attachedDatabase, alias);
+  }
+}
+
+class UnallocatedBudgetPoolData extends DataClass
+    implements Insertable<UnallocatedBudgetPoolData> {
+  final String id;
+  final String profileId;
+  final int month;
+  final int year;
+  final int amount;
+  final String currency;
+  const UnallocatedBudgetPoolData({
+    required this.id,
+    required this.profileId,
+    required this.month,
+    required this.year,
+    required this.amount,
+    required this.currency,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<String>(profileId);
+    map['month'] = Variable<int>(month);
+    map['year'] = Variable<int>(year);
+    map['amount'] = Variable<int>(amount);
+    map['currency'] = Variable<String>(currency);
+    return map;
+  }
+
+  UnallocatedBudgetPoolsCompanion toCompanion(bool nullToAbsent) {
+    return UnallocatedBudgetPoolsCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      month: Value(month),
+      year: Value(year),
+      amount: Value(amount),
+      currency: Value(currency),
+    );
+  }
+
+  factory UnallocatedBudgetPoolData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UnallocatedBudgetPoolData(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<String>(json['profileId']),
+      month: serializer.fromJson<int>(json['month']),
+      year: serializer.fromJson<int>(json['year']),
+      amount: serializer.fromJson<int>(json['amount']),
+      currency: serializer.fromJson<String>(json['currency']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<String>(profileId),
+      'month': serializer.toJson<int>(month),
+      'year': serializer.toJson<int>(year),
+      'amount': serializer.toJson<int>(amount),
+      'currency': serializer.toJson<String>(currency),
+    };
+  }
+
+  UnallocatedBudgetPoolData copyWith({
+    String? id,
+    String? profileId,
+    int? month,
+    int? year,
+    int? amount,
+    String? currency,
+  }) => UnallocatedBudgetPoolData(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    month: month ?? this.month,
+    year: year ?? this.year,
+    amount: amount ?? this.amount,
+    currency: currency ?? this.currency,
+  );
+  UnallocatedBudgetPoolData copyWithCompanion(
+    UnallocatedBudgetPoolsCompanion data,
+  ) {
+    return UnallocatedBudgetPoolData(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      month: data.month.present ? data.month.value : this.month,
+      year: data.year.present ? data.year.value : this.year,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      currency: data.currency.present ? data.currency.value : this.currency,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UnallocatedBudgetPoolData(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('month: $month, ')
+          ..write('year: $year, ')
+          ..write('amount: $amount, ')
+          ..write('currency: $currency')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, profileId, month, year, amount, currency);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UnallocatedBudgetPoolData &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.month == this.month &&
+          other.year == this.year &&
+          other.amount == this.amount &&
+          other.currency == this.currency);
+}
+
+class UnallocatedBudgetPoolsCompanion
+    extends UpdateCompanion<UnallocatedBudgetPoolData> {
+  final Value<String> id;
+  final Value<String> profileId;
+  final Value<int> month;
+  final Value<int> year;
+  final Value<int> amount;
+  final Value<String> currency;
+  final Value<int> rowid;
+  const UnallocatedBudgetPoolsCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.month = const Value.absent(),
+    this.year = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.currency = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  UnallocatedBudgetPoolsCompanion.insert({
+    required String id,
+    required String profileId,
+    required int month,
+    required int year,
+    required int amount,
+    required String currency,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       month = Value(month),
+       year = Value(year),
+       amount = Value(amount),
+       currency = Value(currency);
+  static Insertable<UnallocatedBudgetPoolData> custom({
+    Expression<String>? id,
+    Expression<String>? profileId,
+    Expression<int>? month,
+    Expression<int>? year,
+    Expression<int>? amount,
+    Expression<String>? currency,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (month != null) 'month': month,
+      if (year != null) 'year': year,
+      if (amount != null) 'amount': amount,
+      if (currency != null) 'currency': currency,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  UnallocatedBudgetPoolsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? profileId,
+    Value<int>? month,
+    Value<int>? year,
+    Value<int>? amount,
+    Value<String>? currency,
+    Value<int>? rowid,
+  }) {
+    return UnallocatedBudgetPoolsCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      month: month ?? this.month,
+      year: year ?? this.year,
+      amount: amount ?? this.amount,
+      currency: currency ?? this.currency,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<String>(profileId.value);
+    }
+    if (month.present) {
+      map['month'] = Variable<int>(month.value);
+    }
+    if (year.present) {
+      map['year'] = Variable<int>(year.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (currency.present) {
+      map['currency'] = Variable<String>(currency.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UnallocatedBudgetPoolsCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('month: $month, ')
+          ..write('year: $year, ')
+          ..write('amount: $amount, ')
+          ..write('currency: $currency, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -8722,6 +9135,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $NotificationsTable notifications = $NotificationsTable(this);
   late final $MergeConflictAuditsTable mergeConflictAudits =
       $MergeConflictAuditsTable(this);
+  late final $UnallocatedBudgetPoolsTable unallocatedBudgetPools =
+      $UnallocatedBudgetPoolsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -8741,6 +9156,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     recurringOccurrences,
     notifications,
     mergeConflictAudits,
+    unallocatedBudgetPools,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -8980,6 +9396,34 @@ final class $$ProfilesTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _mergeConflictAuditsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $UnallocatedBudgetPoolsTable,
+    List<UnallocatedBudgetPoolData>
+  >
+  _unallocatedBudgetPoolsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.unallocatedBudgetPools,
+        aliasName: $_aliasNameGenerator(
+          db.profiles.id,
+          db.unallocatedBudgetPools.profileId,
+        ),
+      );
+
+  $$UnallocatedBudgetPoolsTableProcessedTableManager
+  get unallocatedBudgetPoolsRefs {
+    final manager = $$UnallocatedBudgetPoolsTableTableManager(
+      $_db,
+      $_db.unallocatedBudgetPools,
+    ).filter((f) => f.profileId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _unallocatedBudgetPoolsRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -9270,6 +9714,32 @@ class $$ProfilesTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> unallocatedBudgetPoolsRefs(
+    Expression<bool> Function($$UnallocatedBudgetPoolsTableFilterComposer f) f,
+  ) {
+    final $$UnallocatedBudgetPoolsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.unallocatedBudgetPools,
+          getReferencedColumn: (t) => t.profileId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$UnallocatedBudgetPoolsTableFilterComposer(
+                $db: $db,
+                $table: $db.unallocatedBudgetPools,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -9587,6 +10057,32 @@ class $$ProfilesTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> unallocatedBudgetPoolsRefs<T extends Object>(
+    Expression<T> Function($$UnallocatedBudgetPoolsTableAnnotationComposer a) f,
+  ) {
+    final $$UnallocatedBudgetPoolsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.unallocatedBudgetPools,
+          getReferencedColumn: (t) => t.profileId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$UnallocatedBudgetPoolsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.unallocatedBudgetPools,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$ProfilesTableTableManager
@@ -9613,6 +10109,7 @@ class $$ProfilesTableTableManager
             bool recurringTransactionRulesRefs,
             bool notificationsRefs,
             bool mergeConflictAuditsRefs,
+            bool unallocatedBudgetPoolsRefs,
           })
         > {
   $$ProfilesTableTableManager(_$AppDatabase db, $ProfilesTable table)
@@ -9678,6 +10175,7 @@ class $$ProfilesTableTableManager
                 recurringTransactionRulesRefs = false,
                 notificationsRefs = false,
                 mergeConflictAuditsRefs = false,
+                unallocatedBudgetPoolsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -9693,6 +10191,7 @@ class $$ProfilesTableTableManager
                       db.recurringTransactionRules,
                     if (notificationsRefs) db.notifications,
                     if (mergeConflictAuditsRefs) db.mergeConflictAudits,
+                    if (unallocatedBudgetPoolsRefs) db.unallocatedBudgetPools,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -9903,6 +10402,27 @@ class $$ProfilesTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (unallocatedBudgetPoolsRefs)
+                        await $_getPrefetchedData<
+                          ProfileData,
+                          $ProfilesTable,
+                          UnallocatedBudgetPoolData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._unallocatedBudgetPoolsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).unallocatedBudgetPoolsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.profileId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -9934,6 +10454,7 @@ typedef $$ProfilesTableProcessedTableManager =
         bool recurringTransactionRulesRefs,
         bool notificationsRefs,
         bool mergeConflictAuditsRefs,
+        bool unallocatedBudgetPoolsRefs,
       })
     >;
 typedef $$AccountsTableCreateCompanionBuilder =
@@ -17523,6 +18044,369 @@ typedef $$MergeConflictAuditsTableProcessedTableManager =
       MergeConflictAuditData,
       PrefetchHooks Function({bool profileId})
     >;
+typedef $$UnallocatedBudgetPoolsTableCreateCompanionBuilder =
+    UnallocatedBudgetPoolsCompanion Function({
+      required String id,
+      required String profileId,
+      required int month,
+      required int year,
+      required int amount,
+      required String currency,
+      Value<int> rowid,
+    });
+typedef $$UnallocatedBudgetPoolsTableUpdateCompanionBuilder =
+    UnallocatedBudgetPoolsCompanion Function({
+      Value<String> id,
+      Value<String> profileId,
+      Value<int> month,
+      Value<int> year,
+      Value<int> amount,
+      Value<String> currency,
+      Value<int> rowid,
+    });
+
+final class $$UnallocatedBudgetPoolsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $UnallocatedBudgetPoolsTable,
+          UnallocatedBudgetPoolData
+        > {
+  $$UnallocatedBudgetPoolsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProfilesTable _profileIdTable(_$AppDatabase db) =>
+      db.profiles.createAlias(
+        $_aliasNameGenerator(
+          db.unallocatedBudgetPools.profileId,
+          db.profiles.id,
+        ),
+      );
+
+  $$ProfilesTableProcessedTableManager get profileId {
+    final $_column = $_itemColumn<String>('profile_id')!;
+
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$UnallocatedBudgetPoolsTableFilterComposer
+    extends Composer<_$AppDatabase, $UnallocatedBudgetPoolsTable> {
+  $$UnallocatedBudgetPoolsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get month => $composableBuilder(
+    column: $table.month,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currency => $composableBuilder(
+    column: $table.currency,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProfilesTableFilterComposer get profileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$UnallocatedBudgetPoolsTableOrderingComposer
+    extends Composer<_$AppDatabase, $UnallocatedBudgetPoolsTable> {
+  $$UnallocatedBudgetPoolsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get month => $composableBuilder(
+    column: $table.month,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currency => $composableBuilder(
+    column: $table.currency,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProfilesTableOrderingComposer get profileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$UnallocatedBudgetPoolsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UnallocatedBudgetPoolsTable> {
+  $$UnallocatedBudgetPoolsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get month =>
+      $composableBuilder(column: $table.month, builder: (column) => column);
+
+  GeneratedColumn<int> get year =>
+      $composableBuilder(column: $table.year, builder: (column) => column);
+
+  GeneratedColumn<int> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<String> get currency =>
+      $composableBuilder(column: $table.currency, builder: (column) => column);
+
+  $$ProfilesTableAnnotationComposer get profileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$UnallocatedBudgetPoolsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UnallocatedBudgetPoolsTable,
+          UnallocatedBudgetPoolData,
+          $$UnallocatedBudgetPoolsTableFilterComposer,
+          $$UnallocatedBudgetPoolsTableOrderingComposer,
+          $$UnallocatedBudgetPoolsTableAnnotationComposer,
+          $$UnallocatedBudgetPoolsTableCreateCompanionBuilder,
+          $$UnallocatedBudgetPoolsTableUpdateCompanionBuilder,
+          (UnallocatedBudgetPoolData, $$UnallocatedBudgetPoolsTableReferences),
+          UnallocatedBudgetPoolData,
+          PrefetchHooks Function({bool profileId})
+        > {
+  $$UnallocatedBudgetPoolsTableTableManager(
+    _$AppDatabase db,
+    $UnallocatedBudgetPoolsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UnallocatedBudgetPoolsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$UnallocatedBudgetPoolsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$UnallocatedBudgetPoolsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> profileId = const Value.absent(),
+                Value<int> month = const Value.absent(),
+                Value<int> year = const Value.absent(),
+                Value<int> amount = const Value.absent(),
+                Value<String> currency = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UnallocatedBudgetPoolsCompanion(
+                id: id,
+                profileId: profileId,
+                month: month,
+                year: year,
+                amount: amount,
+                currency: currency,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String profileId,
+                required int month,
+                required int year,
+                required int amount,
+                required String currency,
+                Value<int> rowid = const Value.absent(),
+              }) => UnallocatedBudgetPoolsCompanion.insert(
+                id: id,
+                profileId: profileId,
+                month: month,
+                year: year,
+                amount: amount,
+                currency: currency,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$UnallocatedBudgetPoolsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({profileId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (profileId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.profileId,
+                                referencedTable:
+                                    $$UnallocatedBudgetPoolsTableReferences
+                                        ._profileIdTable(db),
+                                referencedColumn:
+                                    $$UnallocatedBudgetPoolsTableReferences
+                                        ._profileIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$UnallocatedBudgetPoolsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UnallocatedBudgetPoolsTable,
+      UnallocatedBudgetPoolData,
+      $$UnallocatedBudgetPoolsTableFilterComposer,
+      $$UnallocatedBudgetPoolsTableOrderingComposer,
+      $$UnallocatedBudgetPoolsTableAnnotationComposer,
+      $$UnallocatedBudgetPoolsTableCreateCompanionBuilder,
+      $$UnallocatedBudgetPoolsTableUpdateCompanionBuilder,
+      (UnallocatedBudgetPoolData, $$UnallocatedBudgetPoolsTableReferences),
+      UnallocatedBudgetPoolData,
+      PrefetchHooks Function({bool profileId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -17557,4 +18441,9 @@ class $AppDatabaseManager {
       $$NotificationsTableTableManager(_db, _db.notifications);
   $$MergeConflictAuditsTableTableManager get mergeConflictAudits =>
       $$MergeConflictAuditsTableTableManager(_db, _db.mergeConflictAudits);
+  $$UnallocatedBudgetPoolsTableTableManager get unallocatedBudgetPools =>
+      $$UnallocatedBudgetPoolsTableTableManager(
+        _db,
+        _db.unallocatedBudgetPools,
+      );
 }
