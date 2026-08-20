@@ -109,6 +109,39 @@ class Goal {
     );
   }
 
+  /// Target date projection: default to 1 year from creation if null.
+  DateTime get effectiveTargetDate {
+    if (targetDate != null) return targetDate!;
+    return DateTime(createdAt.year + 1, createdAt.month, createdAt.day);
+  }
+
+  /// Verifies if target date has expired relative to a given date.
+  bool isExpired(DateTime date) {
+    final targetMidnight = DateTime(
+      effectiveTargetDate.year,
+      effectiveTargetDate.month,
+      effectiveTargetDate.day,
+    );
+    final dateMidnight = DateTime(date.year, date.month, date.day);
+    return dateMidnight.isAfter(targetMidnight);
+  }
+
+  /// Calculates the required monthly contribution to reach the target amount.
+  /// Formula: (targetAmount - currentBalance) / monthsRemaining
+  int calculateRequiredMonthlyContribution(int currentBalance, DateTime today) {
+    final remainingAmount = targetAmount - currentBalance;
+    if (remainingAmount <= 0) return 0;
+
+    final target = effectiveTargetDate;
+    final months = (target.year - today.year) * 12 + target.month - today.month;
+    if (months <= 0) {
+      return remainingAmount;
+    }
+
+    // Ceil division to ensure target is reached
+    return (remainingAmount + months - 1) ~/ months;
+  }
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'profileId': profileId,
