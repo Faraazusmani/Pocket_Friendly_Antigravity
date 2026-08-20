@@ -7,6 +7,9 @@ import '../../features/accounts/presentation/screens/account_detail_screen.dart'
 import '../../features/accounts/presentation/screens/create_edit_account_screen.dart';
 import '../../features/categories/presentation/screens/categories_screen.dart';
 import '../../features/categories/presentation/screens/create_edit_category_screen.dart';
+import '../../features/goals/presentation/screens/goals_screen.dart';
+import '../../features/goals/presentation/screens/goal_detail_screen.dart';
+import '../../features/goals/presentation/screens/create_edit_goal_screen.dart';
 
 /// App routing paths.
 class AppRoutes {
@@ -15,6 +18,9 @@ class AppRoutes {
   static const String transactions = '/transactions';
   static const String insights = '/insights';
   static const String goals = '/goals';
+  static const String createGoal = '/goals/create';
+  static const String editGoal = '/goals/edit/:id';
+  static const String goalDetail = '/goals/:id';
   static const String categories = '/categories';
   static const String createCategory = '/categories/create';
   static const String editCategory = '/categories/edit/:id';
@@ -49,7 +55,21 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.goals,
-      builder: (context, state) => const _PlaceholderScreen(title: 'Goals'),
+      builder: (context, state) => const GoalsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.createGoal,
+      builder: (context, state) => const CreateEditGoalScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.editGoal,
+      builder: (context, state) =>
+          CreateEditGoalScreen(goalId: state.pathParameters['id']!),
+    ),
+    GoRoute(
+      path: AppRoutes.goalDetail,
+      builder: (context, state) =>
+          GoalDetailScreen(goalId: state.pathParameters['id']!),
     ),
     GoRoute(
       path: AppRoutes.categories,
