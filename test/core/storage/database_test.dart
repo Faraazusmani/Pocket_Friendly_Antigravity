@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pocket_friendly/core/storage/database.dart';
 
-
 void main() {
   group('Database Drift & SQLite In-Memory Tests', () {
     late List<int> testKey;

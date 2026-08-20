@@ -1,6 +1,16 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
+import '../../features/accounts/data/repositories/account_repository_impl.dart';
+import '../../features/accounts/domain/repositories/account_repository.dart';
+import '../../features/categories/data/repositories/category_repository_impl.dart';
+import '../../features/categories/domain/repositories/category_repository.dart';
+import '../../features/goals/data/repositories/goal_repository_impl.dart';
+import '../../features/goals/domain/repositories/goal_repository.dart';
+import '../../features/profiles/data/repositories/profile_repository_impl.dart';
+import '../../features/profiles/domain/repositories/profile_repository.dart';
+import '../../features/transactions/data/repositories/transaction_repository_impl.dart';
+import '../../features/transactions/domain/repositories/transaction_repository.dart';
 import '../platform/file_service.dart';
 import '../platform/haptic_service.dart';
 import '../platform/notification_service.dart';
@@ -53,7 +63,24 @@ Future<void> initServiceLocator() async {
   final appDatabase = AppDatabase(databaseConnection);
   sl.registerSingleton<AppDatabase>(appDatabase);
 
+  // 4. Repositories
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(sl<AppDatabase>()),
+  );
+  sl.registerLazySingleton<AccountRepository>(
+    () => AccountRepositoryImpl(sl<AppDatabase>()),
+  );
+  sl.registerLazySingleton<CategoryRepository>(
+    () => CategoryRepositoryImpl(sl<AppDatabase>()),
+  );
+  sl.registerLazySingleton<GoalRepository>(
+    () => GoalRepositoryImpl(sl<AppDatabase>()),
+  );
+  sl.registerLazySingleton<TransactionRepository>(
+    () => TransactionRepositoryImpl(sl<AppDatabase>()),
+  );
+
   logger.info(
-    'Dependency Injection and Secure Database initialized successfully.',
+    'Dependency Injection and Secure Database initialized successfully with all repositories.',
   );
 }
