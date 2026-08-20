@@ -19,7 +19,20 @@ import 'split_categories_sheet.dart';
 import 'split_accounts_sheet.dart';
 
 class RecordTransactionSheet extends StatefulWidget {
-  const RecordTransactionSheet({Key? key}) : super(key: key);
+  final TransactionType? initialType;
+  final int? initialAmountMinor;
+  final String? initialCategoryName;
+  final String? initialAccountName;
+  final String? initialNote;
+
+  const RecordTransactionSheet({
+    Key? key,
+    this.initialType,
+    this.initialAmountMinor,
+    this.initialCategoryName,
+    this.initialAccountName,
+    this.initialNote,
+  }) : super(key: key);
 
   @override
   State<RecordTransactionSheet> createState() => _RecordTransactionSheetState();
@@ -32,6 +45,22 @@ class _RecordTransactionSheetState extends State<RecordTransactionSheet> {
 
   TransactionType _selectedType = TransactionType.expense;
   DateTime _selectedDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialType != null) {
+      _selectedType = widget.initialType!;
+    }
+    if (widget.initialAmountMinor != null) {
+      _amountController.text = (widget.initialAmountMinor! / 100.0)
+          .toStringAsFixed(2);
+    }
+    if (widget.initialNote != null) {
+      _notesController.text = widget.initialNote!;
+    }
+  }
+
   String? _selectedPaymentModeId;
   String? _selectedTagId;
 
@@ -376,14 +405,49 @@ class _RecordTransactionSheetState extends State<RecordTransactionSheet> {
           if (state is TransactionFormMetadataLoaded) {
             // Pick default selections if not set yet
             if (_selectedCategoryId == null && state.categories.isNotEmpty) {
-              _selectedCategoryId = state.categories.first.id;
+              if (widget.initialCategoryName != null) {
+                final matched = state.categories
+                    .where(
+                      (c) => c.name.toLowerCase().contains(
+                        widget.initialCategoryName!.toLowerCase(),
+                      ),
+                    )
+                    .firstOrNull;
+                _selectedCategoryId = matched?.id ?? state.categories.first.id;
+              } else {
+                _selectedCategoryId = state.categories.first.id;
+              }
             }
             if (_selectedSourceAccountId == null && state.accounts.isNotEmpty) {
-              _selectedSourceAccountId = state.accounts.first.id;
+              if (widget.initialAccountName != null) {
+                final matched = state.accounts
+                    .where(
+                      (a) => a.name.toLowerCase().contains(
+                        widget.initialAccountName!.toLowerCase(),
+                      ),
+                    )
+                    .firstOrNull;
+                _selectedSourceAccountId =
+                    matched?.id ?? state.accounts.first.id;
+              } else {
+                _selectedSourceAccountId = state.accounts.first.id;
+              }
             }
             if (_selectedDestinationAccountId == null &&
                 state.accounts.isNotEmpty) {
-              _selectedDestinationAccountId = state.accounts.first.id;
+              if (widget.initialAccountName != null) {
+                final matched = state.accounts
+                    .where(
+                      (a) => a.name.toLowerCase().contains(
+                        widget.initialAccountName!.toLowerCase(),
+                      ),
+                    )
+                    .firstOrNull;
+                _selectedDestinationAccountId =
+                    matched?.id ?? state.accounts.first.id;
+              } else {
+                _selectedDestinationAccountId = state.accounts.first.id;
+              }
             }
             if (_transferSourceAccountId == null && state.accounts.isNotEmpty) {
               _transferSourceAccountId = state.accounts.first.id;
