@@ -283,6 +283,23 @@ class UnallocatedBudgetPools extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+@DataClassName('CreditCardStatementData')
+class CreditCardStatements extends Table {
+  TextColumn get id => text()();
+  TextColumn get profileId => text().references(Profiles, #id)();
+  TextColumn get accountId => text().references(Accounts, #id)();
+  TextColumn get statementCycle => text()(); // e.g. "2026-08"
+  DateTimeColumn get statementPeriodStart => dateTime()();
+  DateTimeColumn get statementPeriodEnd => dateTime()();
+  IntColumn get outstandingAmount => integer()(); // minor units
+  BoolColumn get isSettled => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     Profiles,
@@ -300,6 +317,7 @@ class UnallocatedBudgetPools extends Table {
     Notifications,
     MergeConflictAudits,
     UnallocatedBudgetPools,
+    CreditCardStatements,
   ],
 )
 class AppDatabase extends _$AppDatabase {
