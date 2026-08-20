@@ -272,9 +272,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       return const Success(null);
     } catch (e) {
       final msg = e.toString().replaceFirst('Exception: ', '');
-      return FailureResult(
-        DatabaseFailure(msg, e),
-      );
+      return FailureResult(DatabaseFailure(msg, e));
     }
   }
 

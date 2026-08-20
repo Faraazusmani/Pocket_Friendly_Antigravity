@@ -5,7 +5,10 @@ import '../transaction.dart';
 class FinancialEngine {
   /// Calculates the active balance of an asset account (Bank, Cash, etc.).
   /// Formula: openingBalance + sum(DESTINATION allocations) - sum(SOURCE allocations)
-  static int calculateAccountBalance(Account account, List<Transaction> transactions) {
+  static int calculateAccountBalance(
+    Account account,
+    List<Transaction> transactions,
+  ) {
     if (account.type == AccountType.creditCard) {
       return calculateCreditCardAvailableCredit(account, transactions);
     }
@@ -16,7 +19,8 @@ class FinancialEngine {
       if (tx.status == TransactionStatus.archived) continue;
 
       for (final ta in tx.transferAllocations) {
-        if (ta.endpointType == EndpointType.account && ta.accountId == account.id) {
+        if (ta.endpointType == EndpointType.account &&
+            ta.accountId == account.id) {
           if (ta.role == AllocationRole.destination) {
             balance += ta.amount;
           } else if (ta.role == AllocationRole.source) {
@@ -31,7 +35,10 @@ class FinancialEngine {
 
   /// Calculates the outstanding balance of a Credit Card account.
   /// Formula: openingOutstanding + sum(SOURCE allocations) - sum(DESTINATION allocations)
-  static int calculateCreditCardOutstanding(Account card, List<Transaction> transactions) {
+  static int calculateCreditCardOutstanding(
+    Account card,
+    List<Transaction> transactions,
+  ) {
     if (card.type != AccountType.creditCard) return 0;
 
     int outstanding = card.openingOutstanding ?? 0;
@@ -40,7 +47,8 @@ class FinancialEngine {
       if (tx.status == TransactionStatus.archived) continue;
 
       for (final ta in tx.transferAllocations) {
-        if (ta.endpointType == EndpointType.account && ta.accountId == card.id) {
+        if (ta.endpointType == EndpointType.account &&
+            ta.accountId == card.id) {
           if (ta.role == AllocationRole.source) {
             outstanding += ta.amount;
           } else if (ta.role == AllocationRole.destination) {
@@ -55,7 +63,10 @@ class FinancialEngine {
 
   /// Calculates the remaining available credit on a Credit Card.
   /// Formula: creditLimit - outstanding
-  static int calculateCreditCardAvailableCredit(Account card, List<Transaction> transactions) {
+  static int calculateCreditCardAvailableCredit(
+    Account card,
+    List<Transaction> transactions,
+  ) {
     if (card.type != AccountType.creditCard) return 0;
     final limit = card.creditLimit ?? 0;
     final outstanding = calculateCreditCardOutstanding(card, transactions);
@@ -95,7 +106,8 @@ class FinancialEngine {
     final uppercaseCurrency = currency.toUpperCase();
 
     for (final acc in accounts) {
-      if (acc.currency != uppercaseCurrency || acc.status == AccountStatus.archived) {
+      if (acc.currency != uppercaseCurrency ||
+          acc.status == AccountStatus.archived) {
         continue;
       }
 
@@ -126,7 +138,8 @@ class FinancialEngine {
 
     int goalsTotal = 0;
     for (final goal in goals) {
-      if (goal.currency != uppercaseCurrency || goal.status == GoalStatus.archived) {
+      if (goal.currency != uppercaseCurrency ||
+          goal.status == GoalStatus.archived) {
         continue;
       }
       goalsTotal += calculateGoalBalance(goal, transactions);

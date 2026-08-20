@@ -270,6 +270,19 @@ class MergeConflictAudits extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+@DataClassName('UnallocatedBudgetPoolData')
+class UnallocatedBudgetPools extends Table {
+  TextColumn get id => text()();
+  TextColumn get profileId => text().references(Profiles, #id)();
+  IntColumn get month => integer()(); // 1-12
+  IntColumn get year => integer()();
+  IntColumn get amount => integer()(); // minor units
+  TextColumn get currency => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     Profiles,
@@ -286,6 +299,7 @@ class MergeConflictAudits extends Table {
     RecurringOccurrences,
     Notifications,
     MergeConflictAudits,
+    UnallocatedBudgetPools,
   ],
 )
 class AppDatabase extends _$AppDatabase {

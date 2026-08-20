@@ -3,6 +3,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import '../../features/accounts/data/repositories/account_repository_impl.dart';
 import '../../features/accounts/domain/repositories/account_repository.dart';
+import '../../features/budgets/data/repositories/budget_repository_impl.dart';
+import '../../features/budgets/domain/repositories/budget_repository.dart';
 import '../../features/categories/data/repositories/category_repository_impl.dart';
 import '../../features/categories/domain/repositories/category_repository.dart';
 import '../../features/goals/data/repositories/goal_repository_impl.dart';
@@ -78,6 +80,9 @@ Future<void> initServiceLocator() async {
   );
   sl.registerLazySingleton<TransactionRepository>(
     () => TransactionRepositoryImpl(sl<AppDatabase>()),
+  );
+  sl.registerLazySingleton<BudgetRepository>(
+    () => BudgetRepositoryImpl(sl<AppDatabase>()),
   );
 
   logger.info(
