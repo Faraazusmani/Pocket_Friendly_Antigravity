@@ -10,6 +10,7 @@ import '../../features/categories/presentation/screens/create_edit_category_scre
 import '../../features/goals/presentation/screens/goals_screen.dart';
 import '../../features/goals/presentation/screens/goal_detail_screen.dart';
 import '../../features/goals/presentation/screens/create_edit_goal_screen.dart';
+import 'navigation_shell_layout.dart';
 
 /// App routing paths.
 class AppRoutes {
@@ -40,23 +41,45 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) =>
           const _PlaceholderScreen(title: 'Onboarding'),
     ),
-    GoRoute(
-      path: AppRoutes.dashboard,
-      builder: (context, state) => const DashboardScreen(),
+    ShellRoute(
+      builder: (context, state, child) {
+        return NavigationShellLayout(child: child);
+      },
+      routes: [
+        GoRoute(
+          path: AppRoutes.dashboard,
+          builder: (context, state) => const DashboardScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.transactions,
+          builder: (context, state) =>
+              const _PlaceholderScreen(title: 'Transactions'),
+        ),
+        GoRoute(
+          path: AppRoutes.insights,
+          builder: (context, state) =>
+              const _PlaceholderScreen(title: 'Insights'),
+        ),
+        GoRoute(
+          path: AppRoutes.goals,
+          builder: (context, state) => const GoalsScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.categories,
+          builder: (context, state) => const CategoriesScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.settings,
+          builder: (context, state) =>
+              const _PlaceholderScreen(title: 'Settings'),
+        ),
+        GoRoute(
+          path: AppRoutes.accounts,
+          builder: (context, state) => const AccountsScreen(),
+        ),
+      ],
     ),
-    GoRoute(
-      path: AppRoutes.transactions,
-      builder: (context, state) =>
-          const _PlaceholderScreen(title: 'Transactions'),
-    ),
-    GoRoute(
-      path: AppRoutes.insights,
-      builder: (context, state) => const _PlaceholderScreen(title: 'Insights'),
-    ),
-    GoRoute(
-      path: AppRoutes.goals,
-      builder: (context, state) => const GoalsScreen(),
-    ),
+    // Detail/Form screens open as top-level full-screen pages
     GoRoute(
       path: AppRoutes.createGoal,
       builder: (context, state) => const CreateEditGoalScreen(),
@@ -72,10 +95,6 @@ final GoRouter appRouter = GoRouter(
           GoalDetailScreen(goalId: state.pathParameters['id']!),
     ),
     GoRoute(
-      path: AppRoutes.categories,
-      builder: (context, state) => const CategoriesScreen(),
-    ),
-    GoRoute(
       path: AppRoutes.createCategory,
       builder: (context, state) => const CreateEditCategoryScreen(),
     ),
@@ -83,14 +102,6 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.editCategory,
       builder: (context, state) =>
           CreateEditCategoryScreen(categoryId: state.pathParameters['id']!),
-    ),
-    GoRoute(
-      path: AppRoutes.settings,
-      builder: (context, state) => const _PlaceholderScreen(title: 'Settings'),
-    ),
-    GoRoute(
-      path: AppRoutes.accounts,
-      builder: (context, state) => const AccountsScreen(),
     ),
     GoRoute(
       path: AppRoutes.accountDetail,
