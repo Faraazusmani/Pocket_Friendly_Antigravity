@@ -8,8 +8,8 @@ import '../../../accounts/domain/repositories/account_repository.dart';
 import '../../../categories/domain/repositories/category_repository.dart';
 import '../../../transactions/domain/transaction.dart';
 import '../../../transactions/domain/repositories/transaction_repository.dart';
-import '../../../transactions/domain/services/financial_engine.dart';
-import '../recurring_rule.dart';
+
+import '../../domain/recurring_rule.dart';
 import '../../domain/repositories/recurring_repository.dart';
 import '../../../accounts/domain/payment_mode.dart';
 import '../../../accounts/domain/account.dart';
@@ -36,7 +36,9 @@ class RecurringRepositoryImpl implements RecurringRepository {
       updatedAt: data.updatedAt,
     ).fold(
       (success) => success,
-      (failure) => throw Exception('Failed to map database RecurringTransactionRule: ${failure.message}'),
+      (failure) => throw Exception(
+        'Failed to map database RecurringTransactionRule: ${failure.message}',
+      ),
     );
   }
 
@@ -54,12 +56,16 @@ class RecurringRepositoryImpl implements RecurringRepository {
       updatedAt: data.updatedAt,
     ).fold(
       (success) => success,
-      (failure) => throw Exception('Failed to map database RecurringOccurrence: ${failure.message}'),
+      (failure) => throw Exception(
+        'Failed to map database RecurringOccurrence: ${failure.message}',
+      ),
     );
   }
 
   @override
-  Future<Result<List<RecurringTransactionRule>, Failure>> getActiveRules(String profileId) async {
+  Future<Result<List<RecurringTransactionRule>, Failure>> getActiveRules(
+    String profileId,
+  ) async {
     try {
       final query = _database.select(_database.recurringTransactionRules)
         ..where((t) => t.profileId.equals(profileId) & t.active.equals(true));
@@ -87,7 +93,9 @@ class RecurringRepositoryImpl implements RecurringRepository {
         createdAt: Value(rule.createdAt),
         updatedAt: Value(rule.updatedAt),
       );
-      await _database.into(_database.recurringTransactionRules).insertOnConflictUpdate(companion);
+      await _database
+          .into(_database.recurringTransactionRules)
+          .insertOnConflictUpdate(companion);
       return const Success(null);
     } catch (e) {
       return FailureResult(DatabaseFailure('Failed to save rule', e));
@@ -97,11 +105,14 @@ class RecurringRepositoryImpl implements RecurringRepository {
   @override
   Future<Result<void, Failure>> deactivateRule(String ruleId) async {
     try {
-      final query = _database.update(_database.recurringTransactionRules)..where((t) => t.id.equals(ruleId));
-      await query.write(RecurringTransactionRulesCompanion(
-        active: const Value(false),
-        updatedAt: Value(DateTime.now()),
-      ));
+      final query = _database.update(_database.recurringTransactionRules)
+        ..where((t) => t.id.equals(ruleId));
+      await query.write(
+        RecurringTransactionRulesCompanion(
+          active: const Value(false),
+          updatedAt: Value(DateTime.now()),
+        ),
+      );
       return const Success(null);
     } catch (e) {
       return FailureResult(DatabaseFailure('Failed to deactivate rule', e));
@@ -109,7 +120,9 @@ class RecurringRepositoryImpl implements RecurringRepository {
   }
 
   @override
-  Future<Result<List<RecurringOccurrence>, Failure>> getOccurrences(String ruleId) async {
+  Future<Result<List<RecurringOccurrence>, Failure>> getOccurrences(
+    String ruleId,
+  ) async {
     try {
       final query = _database.select(_database.recurringOccurrences)
         ..where((t) => t.recurringRuleId.equals(ruleId));
@@ -121,7 +134,9 @@ class RecurringRepositoryImpl implements RecurringRepository {
   }
 
   @override
-  Future<Result<void, Failure>> saveOccurrence(RecurringOccurrence occurrence) async {
+  Future<Result<void, Failure>> saveOccurrence(
+    RecurringOccurrence occurrence,
+  ) async {
     try {
       final companion = RecurringOccurrencesCompanion(
         id: Value(occurrence.id),
@@ -135,7 +150,9 @@ class RecurringRepositoryImpl implements RecurringRepository {
         createdAt: Value(occurrence.createdAt),
         updatedAt: Value(occurrence.updatedAt),
       );
-      await _database.into(_database.recurringOccurrences).insertOnConflictUpdate(companion);
+      await _database
+          .into(_database.recurringOccurrences)
+          .insertOnConflictUpdate(companion);
       return const Success(null);
     } catch (e) {
       return FailureResult(DatabaseFailure('Failed to save occurrence', e));
@@ -143,7 +160,11 @@ class RecurringRepositoryImpl implements RecurringRepository {
   }
 
   /// Calculates the next occurrence date based on the current date, frequency, and dayOfPeriod.
-  DateTime calculateNextOccurrenceDate(DateTime current, RecurringFrequency frequency, int dayOfPeriod) {
+  DateTime calculateNextOccurrenceDate(
+    DateTime current,
+    RecurringFrequency frequency,
+    int dayOfPeriod,
+  ) {
     switch (frequency) {
       case RecurringFrequency.daily:
         return current.add(const Duration(days: 1));
@@ -177,7 +198,7 @@ class RecurringRepositoryImpl implements RecurringRepository {
   ) {
     try {
       final map = jsonDecode(templateJsonStr) as Map<String, dynamic>;
-      
+
       final typeStr = map['type'] as String? ?? 'expense';
       final type = TransactionType.values.byName(typeStr.toLowerCase());
 
@@ -193,7 +214,8 @@ class RecurringRepositoryImpl implements RecurringRepository {
         for (final item in caJson) {
           final ca = CategoryAllocation.create(
             id: 'ca_rec_${ruleId}_${occurrenceDate.toIso8601String().substring(0, 10)}_${item['categoryId']}',
-            transactionId: 'tx_rec_${ruleId}_${occurrenceDate.toIso8601String().substring(0, 10)}',
+            transactionId:
+                'tx_rec_${ruleId}_${occurrenceDate.toIso8601String().substring(0, 10)}',
             categoryId: item['categoryId'] as String,
             amount: item['amount'] as int,
             currency: currency,
@@ -208,9 +230,14 @@ class RecurringRepositoryImpl implements RecurringRepository {
         for (final item in taJson) {
           final ta = TransferAllocation.create(
             id: 'ta_rec_${ruleId}_${occurrenceDate.toIso8601String().substring(0, 10)}_${item['id'] ?? item['role']}',
-            transactionId: 'tx_rec_${ruleId}_${occurrenceDate.toIso8601String().substring(0, 10)}',
-            role: AllocationRole.values.byName(item['role'].toString().toLowerCase()),
-            endpointType: EndpointType.values.byName(item['endpointType'].toString().toLowerCase()),
+            transactionId:
+                'tx_rec_${ruleId}_${occurrenceDate.toIso8601String().substring(0, 10)}',
+            role: AllocationRole.values.byName(
+              item['role'].toString().toLowerCase(),
+            ),
+            endpointType: EndpointType.values.byName(
+              item['endpointType'].toString().toLowerCase(),
+            ),
             accountId: item['accountId'] as String?,
             goalId: item['goalId'] as String?,
             amount: item['amount'] as int,
@@ -247,15 +274,23 @@ class RecurringRepositoryImpl implements RecurringRepository {
     CategoryRepository categoryRepository,
   ) async {
     // 1. Validate payment mode
-    final pmRes = await accountRepository.getPaymentMode(tx.paymentModeId, tx.profileId);
-    if (pmRes.isFailure || pmRes.successOrNull!.status == PaymentModeStatus.archived) {
+    final pmRes = await accountRepository.getPaymentMode(
+      tx.paymentModeId,
+      tx.profileId,
+    );
+    if (pmRes.isFailure ||
+        pmRes.successOrNull!.status == PaymentModeStatus.archived) {
       return false;
     }
 
     // 2. Validate category allocations
     for (final ca in tx.categoryAllocations) {
-      final catRes = await categoryRepository.getCategory(ca.categoryId, tx.profileId);
-      if (catRes.isFailure || catRes.successOrNull!.status == CategoryStatus.archived) {
+      final catRes = await categoryRepository.getCategory(
+        ca.categoryId,
+        tx.profileId,
+      );
+      if (catRes.isFailure ||
+          catRes.successOrNull!.status == CategoryStatus.archived) {
         return false;
       }
     }
@@ -263,8 +298,12 @@ class RecurringRepositoryImpl implements RecurringRepository {
     // 3. Validate transfer allocations endpoints
     for (final ta in tx.transferAllocations) {
       if (ta.endpointType == EndpointType.account) {
-        final accRes = await accountRepository.getAccount(ta.accountId!, tx.profileId);
-        if (accRes.isFailure || accRes.successOrNull!.status == AccountStatus.archived) {
+        final accRes = await accountRepository.getAccount(
+          ta.accountId!,
+          tx.profileId,
+        );
+        if (accRes.isFailure ||
+            accRes.successOrNull!.status == AccountStatus.archived) {
           return false;
         }
       }
@@ -298,7 +337,9 @@ class RecurringRepositoryImpl implements RecurringRepository {
         );
 
         while (!currentOccurrenceMidnight.isAfter(todayMidnight)) {
-          final occurrenceDateStr = currentOccurrence.toIso8601String().substring(0, 10);
+          final occurrenceDateStr = currentOccurrence
+              .toIso8601String()
+              .substring(0, 10);
           final occurrenceId = 'occ_${rule.id}_$occurrenceDateStr';
           final txId = 'tx_rec_${rule.id}_$occurrenceDateStr';
 
@@ -308,16 +349,29 @@ class RecurringRepositoryImpl implements RecurringRepository {
           final existing = await existingQuery.getSingleOrNull();
 
           if (existing != null &&
-              (existing.status == OccurrenceStatus.recorded.name.toUpperCase() ||
-                  existing.status == OccurrenceStatus.skipped.name.toUpperCase())) {
+              (existing.status ==
+                      OccurrenceStatus.recorded.name.toUpperCase() ||
+                  existing.status ==
+                      OccurrenceStatus.skipped.name.toUpperCase())) {
             // Already handled, advance date and continue
-            currentOccurrence = calculateNextOccurrenceDate(currentOccurrence, rule.frequency, rule.dayOfPeriod);
-            currentOccurrenceMidnight = DateTime(currentOccurrence.year, currentOccurrence.month, currentOccurrence.day);
+            currentOccurrence = calculateNextOccurrenceDate(
+              currentOccurrence,
+              rule.frequency,
+              rule.dayOfPeriod,
+            );
+            currentOccurrenceMidnight = DateTime(
+              currentOccurrence.year,
+              currentOccurrence.month,
+              currentOccurrence.day,
+            );
             continue;
           }
 
           // 2. Transaction Repair Check: check if transaction already exists in the database
-          final existingTxRes = await transactionRepository.getTransaction(txId, profileId);
+          final existingTxRes = await transactionRepository.getTransaction(
+            txId,
+            profileId,
+          );
           if (existingTxRes.isSuccess) {
             // Transaction exists! Repair by updating occurrence to RECORDED
             final repairOcc = RecurringOccurrence(
@@ -332,8 +386,16 @@ class RecurringRepositoryImpl implements RecurringRepository {
             );
             await saveOccurrence(repairOcc);
 
-            currentOccurrence = calculateNextOccurrenceDate(currentOccurrence, rule.frequency, rule.dayOfPeriod);
-            currentOccurrenceMidnight = DateTime(currentOccurrence.year, currentOccurrence.month, currentOccurrence.day);
+            currentOccurrence = calculateNextOccurrenceDate(
+              currentOccurrence,
+              rule.frequency,
+              rule.dayOfPeriod,
+            );
+            currentOccurrenceMidnight = DateTime(
+              currentOccurrence.year,
+              currentOccurrence.month,
+              currentOccurrence.day,
+            );
             continue;
           }
 
@@ -352,25 +414,37 @@ class RecurringRepositoryImpl implements RecurringRepository {
 
             try {
               await notificationService.showNotification(
-                rule.id.hashCode + currentOccurrence.day,
-                'Upcoming Bill Reminder',
-                'Scheduled reminder for occurrence on $occurrenceDateStr.',
+                id: rule.id.hashCode + currentOccurrence.day,
+                title: 'Upcoming Bill Reminder',
+                body:
+                    'Scheduled reminder for occurrence on $occurrenceDateStr.',
               );
             } catch (_) {}
           } else {
             // AUTOMATIC RECORDING MODE: Attempt to record transaction atomically
-            final parsedTx = _parseTemplate(rule.transactionTemplate, rule.id, currentOccurrence, profileId);
+            final parsedTx = _parseTemplate(
+              rule.transactionTemplate,
+              rule.id,
+              currentOccurrence,
+              profileId,
+            );
             bool safeToRecord = false;
 
             if (parsedTx != null) {
-              safeToRecord = await _validateDependencies(parsedTx, accountRepository, categoryRepository);
+              safeToRecord = await _validateDependencies(
+                parsedTx,
+                accountRepository,
+                categoryRepository,
+              );
             }
 
             if (safeToRecord && parsedTx != null) {
               await _database.transaction(() async {
                 // Save the transaction record
-                final txResult = await transactionRepository.saveTransaction(parsedTx);
-                
+                final txResult = await transactionRepository.saveTransaction(
+                  parsedTx,
+                );
+
                 if (txResult.isSuccess) {
                   // Mark occurrence as RECORDED
                   final occ = RecurringOccurrence(
@@ -387,9 +461,10 @@ class RecurringRepositoryImpl implements RecurringRepository {
 
                   try {
                     await notificationService.showNotification(
-                      rule.id.hashCode + currentOccurrence.day,
-                      'Automatic Payment Recorded',
-                      'Successfully recorded transaction of ${parsedTx.totalAmount} ${parsedTx.currency}.',
+                      id: rule.id.hashCode + currentOccurrence.day,
+                      title: 'Automatic Payment Recorded',
+                      body:
+                          'Successfully recorded transaction of ${parsedTx.totalAmount} ${parsedTx.currency}.',
                     );
                   } catch (_) {}
                 } else {
@@ -407,9 +482,10 @@ class RecurringRepositoryImpl implements RecurringRepository {
 
                   try {
                     await notificationService.showNotification(
-                      rule.id.hashCode + currentOccurrence.day,
-                      'Automatic Payment Failed',
-                      'Validation failed while trying to record recurring payment.',
+                      id: rule.id.hashCode + currentOccurrence.day,
+                      title: 'Automatic Payment Failed',
+                      body:
+                          'Validation failed while trying to record recurring payment.',
                     );
                   } catch (_) {}
                 }
@@ -429,33 +505,48 @@ class RecurringRepositoryImpl implements RecurringRepository {
 
               try {
                 await notificationService.showNotification(
-                  rule.id.hashCode + currentOccurrence.day,
-                  'Automatic Payment Failed',
-                  'Archived or deleted accounts/categories prevented recording the transaction.',
+                  id: rule.id.hashCode + currentOccurrence.day,
+                  title: 'Automatic Payment Failed',
+                  body:
+                      'Archived or deleted accounts/categories prevented recording the transaction.',
                 );
               } catch (_) {}
             }
           }
 
           // Advance date to next occurrence
-          final nextDate = calculateNextOccurrenceDate(currentOccurrence, rule.frequency, rule.dayOfPeriod);
-          
+          final nextDate = calculateNextOccurrenceDate(
+            currentOccurrence,
+            rule.frequency,
+            rule.dayOfPeriod,
+          );
+
           // Update the rule's nextOccurrence and lastExecutedAt in DB
-          final ruleQuery = _database.update(_database.recurringTransactionRules)..where((t) => t.id.equals(rule.id));
-          await ruleQuery.write(RecurringTransactionRulesCompanion(
-            nextOccurrence: Value(nextDate),
-            lastExecutedAt: Value(currentOccurrence),
-            updatedAt: Value(DateTime.now()),
-          ));
+          final ruleQuery = _database.update(
+            _database.recurringTransactionRules,
+          )..where((t) => t.id.equals(rule.id));
+          await ruleQuery.write(
+            RecurringTransactionRulesCompanion(
+              nextOccurrence: Value(nextDate),
+              lastExecutedAt: Value(currentOccurrence),
+              updatedAt: Value(DateTime.now()),
+            ),
+          );
 
           currentOccurrence = nextDate;
-          currentOccurrenceMidnight = DateTime(currentOccurrence.year, currentOccurrence.month, currentOccurrence.day);
+          currentOccurrenceMidnight = DateTime(
+            currentOccurrence.year,
+            currentOccurrence.month,
+            currentOccurrence.day,
+          );
         }
       }
 
       return const Success(null);
     } catch (e) {
-      return FailureResult(DatabaseFailure('Recurring execution runner failed', e));
+      return FailureResult(
+        DatabaseFailure('Recurring execution runner failed', e),
+      );
     }
   }
 }

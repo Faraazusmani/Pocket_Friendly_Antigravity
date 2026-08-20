@@ -7,13 +7,17 @@ import '../../../transactions/domain/repositories/transaction_repository.dart';
 import '../recurring_rule.dart';
 
 abstract class RecurringRepository {
-  Future<Result<List<RecurringTransactionRule>, Failure>> getActiveRules(String profileId);
+  Future<Result<List<RecurringTransactionRule>, Failure>> getActiveRules(
+    String profileId,
+  );
 
   Future<Result<void, Failure>> saveRule(RecurringTransactionRule rule);
 
   Future<Result<void, Failure>> deactivateRule(String ruleId);
 
-  Future<Result<List<RecurringOccurrence>, Failure>> getOccurrences(String ruleId);
+  Future<Result<List<RecurringOccurrence>, Failure>> getOccurrences(
+    String ruleId,
+  );
 
   Future<Result<void, Failure>> saveOccurrence(RecurringOccurrence occurrence);
 

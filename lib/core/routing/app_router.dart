@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
+
 /// App routing paths.
 class AppRoutes {
   static const String onboarding = '/onboarding';
@@ -23,7 +25,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.dashboard,
-      builder: (context, state) => const _PlaceholderScreen(title: 'Dashboard'),
+      builder: (context, state) => const DashboardScreen(),
     ),
     GoRoute(
       path: AppRoutes.transactions,
