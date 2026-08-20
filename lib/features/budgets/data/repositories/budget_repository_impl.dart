@@ -224,16 +224,20 @@ class BudgetRepositoryImpl implements BudgetRepository {
             ..where((t) => t.transactionId.equals(tx.id));
           final taResults = await taQuery.get();
           final transferAllocations = taResults
-              .map((ta) => TransferAllocation.create(
-                    id: ta.id,
-                    transactionId: ta.transactionId,
-                    role: AllocationRole.values.byName(ta.role.toLowerCase()),
-                    endpointType: EndpointType.values.byName(ta.endpointType.toLowerCase()),
-                    accountId: ta.accountId,
-                    goalId: ta.goalId,
-                    amount: ta.amount,
-                    currency: ta.currency,
-                  ).successOrNull!)
+              .map(
+                (ta) => TransferAllocation.create(
+                  id: ta.id,
+                  transactionId: ta.transactionId,
+                  role: AllocationRole.values.byName(ta.role.toLowerCase()),
+                  endpointType: EndpointType.values.byName(
+                    ta.endpointType.toLowerCase(),
+                  ),
+                  accountId: ta.accountId,
+                  goalId: ta.goalId,
+                  amount: ta.amount,
+                  currency: ta.currency,
+                ).successOrNull!,
+              )
               .toList();
 
           final txn = Transaction.create(

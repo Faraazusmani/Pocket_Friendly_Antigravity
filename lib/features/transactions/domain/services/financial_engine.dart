@@ -74,25 +74,43 @@ class FinancialEngine {
   }
 
   /// Calculates the active balance of a Goal.
-  /// Formula: sum(DESTINATION allocations) - sum(SOURCE allocations)
+  /// Formula: sum(Expense category allocations) + sum(Transfer DESTINATION allocations) - sum(Transfer SOURCE allocations)
   static int calculateGoalBalance(Goal goal, List<Transaction> transactions) {
     int balance = 0;
 
     for (final tx in transactions) {
       if (tx.status == TransactionStatus.archived) continue;
 
-      for (final ta in tx.transferAllocations) {
-        if (ta.endpointType == EndpointType.goal && ta.goalId == goal.id) {
-          if (ta.role == AllocationRole.destination) {
-            balance += ta.amount;
-          } else if (ta.role == AllocationRole.source) {
-            balance -= ta.amount;
+      if (tx.type == TransactionType.expense) {
+        for (final ca in tx.categoryAllocations) {
+          if (ca.categoryId == goal.categoryId) {
+            balance += ca.amount;
+          }
+        }
+      } else if (tx.type == TransactionType.transfer) {
+        for (final ta in tx.transferAllocations) {
+          if (ta.endpointType == EndpointType.goal && ta.goalId == goal.id) {
+            if (ta.role == AllocationRole.destination) {
+              balance += ta.amount;
+            } else if (ta.role == AllocationRole.source) {
+              balance -= ta.amount;
+            }
           }
         }
       }
     }
 
     return balance;
+  }
+
+  /// Calculates the progress percentage of a Goal.
+  static double calculateGoalProgressPercent(
+    Goal goal,
+    List<Transaction> transactions,
+  ) {
+    if (goal.targetAmount <= 0) return 0.0;
+    final balance = calculateGoalBalance(goal, transactions);
+    return (balance / goal.targetAmount) * 100.0;
   }
 
   /// Calculates the Net Available Balance (NAB) for a profile in a given currency.

@@ -167,6 +167,42 @@ class TransactionRepositoryImpl implements TransactionRepository {
             if (ta.endpointType == EndpointType.goal &&
                 ta.role == AllocationRole.source) {
               final goalId = ta.goalId!;
+
+              // Fetch target Goal's category link
+              final goalData = await (_database.select(
+                _database.goals,
+              )..where((t) => t.id.equals(goalId))).getSingleOrNull();
+              if (goalData == null) continue;
+
+              final categoryId = goalData.categoryId;
+
+              // 1. Sum up all category allocations to this category (contributions)
+              final caQuery =
+                  _database.select(_database.categoryAllocations).join([
+                    innerJoin(
+                      _database.transactions,
+                      _database.transactions.id.equalsExp(
+                        _database.categoryAllocations.transactionId,
+                      ),
+                    ),
+                  ])..where(
+                    _database.categoryAllocations.categoryId.equals(
+                          categoryId,
+                        ) &
+                        _database.transactions.status.equals(
+                          TransactionStatus.active.name.toUpperCase(),
+                        ) &
+                        _database.transactions.id.equals(transaction.id).not(),
+                  );
+
+              final caResults = await caQuery.get();
+              int totalContributions = 0;
+              for (final row in caResults) {
+                final alloc = row.readTable(_database.categoryAllocations);
+                totalContributions += alloc.amount;
+              }
+
+              // 2. Sum up all transfer allocations from/to this goal (withdrawals/internal transfers)
               final goalQuery =
                   _database.select(_database.transferAllocations).join([
                     innerJoin(
@@ -184,17 +220,18 @@ class TransactionRepositoryImpl implements TransactionRepository {
                   );
 
               final results = await goalQuery.get();
-              int currentBalance = 0;
+              int totalWithdrawals = 0;
               for (final row in results) {
                 final alloc = row.readTable(_database.transferAllocations);
-                if (alloc.role ==
-                    AllocationRole.destination.name.toUpperCase()) {
-                  currentBalance += alloc.amount;
+                if (alloc.role == AllocationRole.source.name.toUpperCase()) {
+                  totalWithdrawals += alloc.amount;
                 } else if (alloc.role ==
-                    AllocationRole.source.name.toUpperCase()) {
-                  currentBalance -= alloc.amount;
+                    AllocationRole.destination.name.toUpperCase()) {
+                  totalWithdrawals -= alloc.amount;
                 }
               }
+
+              final currentBalance = totalContributions - totalWithdrawals;
 
               if (currentBalance - ta.amount < 0) {
                 throw Exception(
