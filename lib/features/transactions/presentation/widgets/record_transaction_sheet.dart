@@ -754,7 +754,7 @@ class _RecordTransactionSheetState extends State<RecordTransactionSheet> {
                                     final acc = state.accounts
                                         .where((a) => a.id == e.key)
                                         .firstOrNull;
-                                    final double major = e.value / 100.0;
+                                    
                                     return '${acc?.name ?? 'Account'}: ${CurrencyFormatter.format(e.value, state.defaultCurrency)}';
                                   })
                                   .join(', '),
@@ -842,7 +842,7 @@ class _RecordTransactionSheetState extends State<RecordTransactionSheet> {
                                     final acc = state.accounts
                                         .where((a) => a.id == e.key)
                                         .firstOrNull;
-                                    final double major = e.value / 100.0;
+                                    
                                     return '${acc?.name ?? 'Account'}: ${CurrencyFormatter.format(e.value, state.defaultCurrency)}';
                                   })
                                   .join(', '),

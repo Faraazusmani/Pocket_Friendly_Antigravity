@@ -10,10 +10,8 @@ import 'package:pocket_friendly/features/accounts/data/repositories/account_repo
 import 'package:pocket_friendly/features/categories/domain/category.dart';
 import 'package:pocket_friendly/features/categories/domain/repositories/category_repository.dart';
 import 'package:pocket_friendly/features/categories/data/repositories/category_repository_impl.dart';
-import 'package:pocket_friendly/features/goals/domain/goal.dart';
 import 'package:pocket_friendly/features/goals/domain/repositories/goal_repository.dart';
 import 'package:pocket_friendly/features/goals/data/repositories/goal_repository_impl.dart';
-import 'package:pocket_friendly/features/budgets/domain/budget.dart';
 import 'package:pocket_friendly/features/budgets/domain/repositories/budget_repository.dart';
 import 'package:pocket_friendly/features/budgets/data/repositories/budget_repository_impl.dart';
 import 'package:pocket_friendly/features/recurring/domain/repositories/recurring_repository.dart';
