@@ -15,6 +15,7 @@ import '../../domain/transaction.dart';
 import '../bloc/transactions_bloc.dart';
 import '../bloc/transactions_event.dart';
 import '../bloc/transactions_state.dart';
+import '../../../../core/utilities/currency_formatter.dart';
 import 'split_categories_sheet.dart';
 import 'split_accounts_sheet.dart';
 
@@ -593,11 +594,7 @@ class _RecordTransactionSheetState extends State<RecordTransactionSheet> {
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: borderCol),
                           ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppColors.darkAccentPrimary,
-                            ),
-                          ),
+                          focusedBorder: AppBorders.focusedUnderline(context),
                         ),
                         validator: (val) {
                           if (val == null || val.trim().isEmpty)
@@ -667,8 +664,8 @@ class _RecordTransactionSheetState extends State<RecordTransactionSheet> {
                                     final cat = state.categories
                                         .where((c) => c.id == e.key)
                                         .firstOrNull;
-                                    final double major = e.value / 100.0;
-                                    return '${cat?.name ?? 'Category'}: ₹${major.toStringAsFixed(0)}';
+                                     final formatted = CurrencyFormatter.format(e.value, state.defaultCurrency);
+                                     return '${cat?.name ?? 'Category'}: $formatted';
                                   })
                                   .join(', '),
                               style: TextStyle(
@@ -758,7 +755,7 @@ class _RecordTransactionSheetState extends State<RecordTransactionSheet> {
                                         .where((a) => a.id == e.key)
                                         .firstOrNull;
                                     final double major = e.value / 100.0;
-                                    return '${acc?.name ?? 'Account'}: ₹${major.toStringAsFixed(0)}';
+                                    return '${acc?.name ?? 'Account'}: ${CurrencyFormatter.format(e.value, state.defaultCurrency)}';
                                   })
                                   .join(', '),
                               style: TextStyle(
@@ -846,7 +843,7 @@ class _RecordTransactionSheetState extends State<RecordTransactionSheet> {
                                         .where((a) => a.id == e.key)
                                         .firstOrNull;
                                     final double major = e.value / 100.0;
-                                    return '${acc?.name ?? 'Account'}: ₹${major.toStringAsFixed(0)}';
+                                    return '${acc?.name ?? 'Account'}: ${CurrencyFormatter.format(e.value, state.defaultCurrency)}';
                                   })
                                   .join(', '),
                               style: TextStyle(
@@ -1175,11 +1172,7 @@ class _RecordTransactionSheetState extends State<RecordTransactionSheet> {
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: borderCol),
                           ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: AppColors.darkAccentPrimary,
-                            ),
-                          ),
+                          focusedBorder: AppBorders.focusedUnderline(context),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),

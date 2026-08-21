@@ -6,6 +6,7 @@ import 'package:pocket_friendly/core/result/result.dart';
 import 'package:pocket_friendly/core/di/service_locator.dart';
 import 'package:pocket_friendly/core/storage/database.dart';
 import 'package:pocket_friendly/core/platform/haptic_service.dart';
+import 'package:pocket_friendly/core/security/privacy_mode_service.dart';
 import 'package:pocket_friendly/features/profiles/domain/profile.dart';
 import 'package:pocket_friendly/features/profiles/domain/repositories/profile_repository.dart';
 import 'package:pocket_friendly/features/profiles/data/repositories/profile_repository_impl.dart';
@@ -55,6 +56,7 @@ void main() {
     await sl.reset();
     sl.registerSingleton<AppDatabase>(database);
     sl.registerLazySingleton<HapticService>(() => MockHapticService());
+    sl.registerSingleton<PrivacyModeService>(FakePrivacyModeService());
 
     final profileRepo = ProfileRepositoryImpl(database);
     final accountRepo = AccountRepositoryImpl(database);
@@ -243,4 +245,14 @@ void main() {
     expect(find.text('₹100'), findsOneWidget);
     expect(find.text('-₹15'), findsOneWidget);
   });
+}
+
+class FakePrivacyModeService implements PrivacyModeService {
+  bool _enabled = false;
+  @override
+  bool get isEnabled => _enabled;
+  @override
+  Future<void> setEnabled(bool enabled) async => _enabled = enabled;
+  @override
+  Future<void> init() async {}
 }

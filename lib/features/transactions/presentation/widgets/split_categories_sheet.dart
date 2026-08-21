@@ -310,11 +310,7 @@ class _SplitCategoriesSheetState extends State<SplitCategoriesSheet> {
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: borderCol),
                             ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: AppColors.darkAccentPrimary,
-                              ),
-                            ),
+                            focusedBorder: AppBorders.focusedOutline(context),
                           ),
                           onChanged: (_) {
                             setState(() {}); // Recalculate progress values

@@ -24,6 +24,7 @@ class GoalsLoaded extends GoalsState {
   final List<Account> accounts;
   final List<Category> categories;
   final List<Transaction> transactions;
+  final bool privacyModeEnabled;
 
   // Pre-calculated stats for easy rendering
   final Map<String, int> goalBalances; // goalId -> current balance minor units
@@ -37,6 +38,7 @@ class GoalsLoaded extends GoalsState {
     required this.transactions,
     required this.goalBalances,
     required this.goalProgressPercents,
+    this.privacyModeEnabled = false,
   });
 
   @override
@@ -47,6 +49,7 @@ class GoalsLoaded extends GoalsState {
     transactions,
     goalBalances,
     goalProgressPercents,
+    privacyModeEnabled,
   ];
 
   GoalsLoaded copyWith({
@@ -56,6 +59,7 @@ class GoalsLoaded extends GoalsState {
     List<Transaction>? transactions,
     Map<String, int>? goalBalances,
     Map<String, double>? goalProgressPercents,
+    bool? privacyModeEnabled,
   }) {
     return GoalsLoaded(
       goals: goals ?? this.goals,
@@ -64,6 +68,7 @@ class GoalsLoaded extends GoalsState {
       transactions: transactions ?? this.transactions,
       goalBalances: goalBalances ?? this.goalBalances,
       goalProgressPercents: goalProgressPercents ?? this.goalProgressPercents,
+      privacyModeEnabled: privacyModeEnabled ?? this.privacyModeEnabled,
     );
   }
 }

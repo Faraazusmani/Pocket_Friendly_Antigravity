@@ -17,6 +17,9 @@ import '../bloc/accounts_event.dart';
 import '../bloc/accounts_state.dart';
 import '../widgets/adjust_balance_dialog.dart';
 
+import '../../../../core/utilities/currency_formatter.dart';
+import '../../../../core/security/privacy_mode_service.dart';
+
 class AccountDetailScreen extends StatelessWidget {
   final String accountId;
 
@@ -63,13 +66,12 @@ class AccountDetailView extends StatelessWidget {
   }
 
   String _formatAmount(int amountMinorUnits, String currency) {
-    final double major = amountMinorUnits / 100.0;
-    final String symbol = currency.toUpperCase() == 'INR'
-        ? '₹'
-        : (currency.toUpperCase() == 'USD'
-              ? '\$'
-              : (currency.toUpperCase() == 'EUR' ? '€' : '$currency '));
-    return '$symbol${major.toStringAsFixed(0)}';
+    final privacyMode = sl.isRegistered<PrivacyModeService>() && sl<PrivacyModeService>().isEnabled;
+    return CurrencyFormatter.format(
+      amountMinorUnits,
+      currency,
+      privacyMode: privacyMode,
+    );
   }
 
   String _formatDate(DateTime date) {
@@ -173,6 +175,7 @@ class AccountDetailView extends StatelessWidget {
               backgroundColor: scaffoldBg,
               elevation: 0,
               leading: IconButton(
+                tooltip: 'Back',
                 icon: Icon(LucideIcons.arrowLeft, color: textPrimary),
                 onPressed: () {
                   sl<HapticService>().selectionClick();
@@ -190,6 +193,7 @@ class AccountDetailView extends StatelessWidget {
               ),
               actions: [
                 IconButton(
+                  tooltip: 'Edit Account',
                   icon: Icon(LucideIcons.edit2, color: textPrimary),
                   onPressed: () async {
                     sl<HapticService>().selectionClick();

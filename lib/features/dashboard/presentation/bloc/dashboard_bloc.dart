@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/di/service_locator.dart';
+import '../../../../core/security/privacy_mode_service.dart';
 import '../../../profiles/domain/profile.dart';
 import '../../../profiles/domain/repositories/profile_repository.dart';
 import '../../../accounts/domain/account.dart';
@@ -45,9 +47,10 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     Emitter<DashboardState> emit,
   ) async {
     emit(const DashboardLoading());
+    final isPrivacyEnabled = sl.isRegistered<PrivacyModeService>() && sl<PrivacyModeService>().isEnabled;
     await _loadDashboardData(
       selectedMonth: DateTime.now(),
-      privacyModeEnabled: false,
+      privacyModeEnabled: isPrivacyEnabled,
       selectedCurrency: null,
       emit: emit,
     );
@@ -75,9 +78,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   ) async {
     final currentState = state;
     if (currentState is DashboardLoaded) {
+      final newMode = !currentState.privacyModeEnabled;
+      if (sl.isRegistered<PrivacyModeService>()) {
+        await sl<PrivacyModeService>().setEnabled(newMode);
+      }
       emit(
         currentState.copyWith(
-          privacyModeEnabled: !currentState.privacyModeEnabled,
+          privacyModeEnabled: newMode,
         ),
       );
     }

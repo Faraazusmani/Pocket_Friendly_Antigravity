@@ -111,9 +111,7 @@ class _ContributeGoalDialogState extends State<ContributeGoalDialog> {
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: borderCol),
                   ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.darkAccentPrimary),
-                  ),
+                  focusedBorder: AppBorders.focusedUnderline(context),
                 ),
                 validator: (val) {
                   if (val == null || val.trim().isEmpty) {
@@ -336,9 +334,7 @@ class _WithdrawGoalDialogState extends State<WithdrawGoalDialog> {
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: borderCol),
                   ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.darkAccentPrimary),
-                  ),
+                  focusedBorder: AppBorders.focusedUnderline(context),
                 ),
                 validator: (val) {
                   if (val == null || val.trim().isEmpty) {

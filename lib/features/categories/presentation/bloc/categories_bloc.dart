@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
+import '../../../../core/di/service_locator.dart';
+import '../../../../core/security/privacy_mode_service.dart';
 import '../../../profiles/domain/repositories/profile_repository.dart';
 import '../../domain/category.dart';
 import '../../domain/tag.dart';
@@ -107,12 +109,16 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
         }
       }
 
+      final activeProfile = profilesRes.successOrNull!.first;
+
       emit(
         CategoriesLoaded(
           categories: categories,
           tags: tags,
           transactions: transactions,
           categorySpent: categorySpent,
+          defaultCurrency: activeProfile.defaultCurrency,
+          privacyModeEnabled: sl.isRegistered<PrivacyModeService>() && sl<PrivacyModeService>().isEnabled,
         ),
       );
     } catch (e) {

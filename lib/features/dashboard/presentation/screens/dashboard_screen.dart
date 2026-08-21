@@ -365,6 +365,9 @@ class DashboardView extends StatelessWidget {
                           const SizedBox(width: AppSpacing.sm),
                           // Privacy Toggle
                           IconButton(
+                            tooltip: loaded.privacyModeEnabled
+                                ? 'Disable Privacy Mode'
+                                : 'Enable Privacy Mode',
                             onPressed: () {
                               sl<HapticService>().selectionClick();
                               BlocProvider.of<DashboardBloc>(

@@ -5,6 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:pocket_friendly/core/di/service_locator.dart';
 import 'package:pocket_friendly/core/design_system/tokens.dart';
 import 'package:pocket_friendly/core/platform/haptic_service.dart';
+import 'package:pocket_friendly/core/utilities/currency_formatter.dart';
 import 'package:pocket_friendly/features/profiles/domain/repositories/profile_repository.dart';
 import 'package:pocket_friendly/features/accounts/domain/repositories/account_repository.dart';
 import 'package:pocket_friendly/features/transactions/domain/repositories/transaction_repository.dart';
@@ -62,14 +63,12 @@ class _AccountsViewState extends State<AccountsView> {
     }
   }
 
-  String _formatAmount(int amountMinorUnits, String currency) {
-    final double major = amountMinorUnits / 100.0;
-    final String symbol = currency.toUpperCase() == 'INR'
-        ? '₹'
-        : (currency.toUpperCase() == 'USD'
-              ? '\$'
-              : (currency.toUpperCase() == 'EUR' ? '€' : '$currency '));
-    return '$symbol${major.toStringAsFixed(0)}';
+  String _formatAmount(int amountMinorUnits, String currency, bool privacyMode) {
+    return CurrencyFormatter.format(
+      amountMinorUnits,
+      currency,
+      privacyMode: privacyMode,
+    );
   }
 
   @override
@@ -156,6 +155,7 @@ class _AccountsViewState extends State<AccountsView> {
               backgroundColor: scaffoldBg,
               elevation: 0,
               leading: IconButton(
+                tooltip: 'Back',
                 icon: Icon(LucideIcons.arrowLeft, color: textPrimary),
                 onPressed: () {
                   sl<HapticService>().selectionClick();
@@ -247,6 +247,7 @@ class _AccountsViewState extends State<AccountsView> {
                             _formatAmount(
                               stats['netWorth'] ?? 0,
                               activeCurrency,
+                              state.privacyModeEnabled,
                             ),
                             style: AppTypography.display.copyWith(
                               color: textPrimary,
@@ -272,6 +273,7 @@ class _AccountsViewState extends State<AccountsView> {
                                     _formatAmount(
                                       stats['assets'] ?? 0,
                                       activeCurrency,
+                                      state.privacyModeEnabled,
                                     ),
                                     style: AppTypography.body.copyWith(
                                       color: isDark
@@ -297,6 +299,7 @@ class _AccountsViewState extends State<AccountsView> {
                                     _formatAmount(
                                       stats['liabilities'] ?? 0,
                                       activeCurrency,
+                                      state.privacyModeEnabled,
                                     ),
                                     style: AppTypography.body.copyWith(
                                       color: AppColors.statusError,
@@ -324,6 +327,7 @@ class _AccountsViewState extends State<AccountsView> {
                           cardBg,
                           textPrimary,
                           textSecondary,
+                          state.privacyModeEnabled,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),
@@ -340,6 +344,7 @@ class _AccountsViewState extends State<AccountsView> {
                           cardBg,
                           textPrimary,
                           textSecondary,
+                          state.privacyModeEnabled,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),
@@ -356,6 +361,7 @@ class _AccountsViewState extends State<AccountsView> {
                           cardBg,
                           textPrimary,
                           textSecondary,
+                          state.privacyModeEnabled,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),
@@ -364,14 +370,61 @@ class _AccountsViewState extends State<AccountsView> {
                     if (bankAccounts.isEmpty &&
                         cashAccounts.isEmpty &&
                         cardAccounts.isEmpty)
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 40),
-                          child: Text(
-                            'No active accounts in $activeCurrency.',
-                            style: AppTypography.body.copyWith(
-                              color: textSecondary,
-                            ),
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        decoration: BoxDecoration(
+                          color: cardBg,
+                          borderRadius: BorderRadius.circular(AppRadius.medium),
+                          border: Border.all(color: borderCol),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                LucideIcons.wallet,
+                                size: 48,
+                                color: textSecondary,
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              Text(
+                                'No Active Accounts',
+                                style: AppTypography.sectionHeading.copyWith(
+                                  color: textPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.sm),
+                              Text(
+                                'Add a bank account or cash to start tracking your finances in $activeCurrency.',
+                                textAlign: TextAlign.center,
+                                style: AppTypography.secondaryBody.copyWith(
+                                  color: textSecondary,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.lg),
+                              ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: isDark
+                                      ? AppColors.darkAccentPrimary
+                                      : AppColors.lightAccentPrimary,
+                                  foregroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      AppRadius.medium,
+                                    ),
+                                  ),
+                                ),
+                                icon: const Icon(LucideIcons.plus, size: 16),
+                                label: const Text('ADD ACCOUNT'),
+                                onPressed: () async {
+                                  sl<HapticService>().mediumImpact();
+                                  final refresh = await context.push<bool>('/accounts/create');
+                                  if (refresh == true) {
+                                    context.read<AccountsBloc>().add(const LoadAccounts());
+                                  }
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -427,6 +480,7 @@ class _AccountsViewState extends State<AccountsView> {
     Color cardBg,
     Color textPrimary,
     Color textSecondary,
+    bool privacyMode,
   ) {
     final isCreditCard = account.type == AccountType.creditCard;
     final int balance = isCreditCard
@@ -454,7 +508,7 @@ class _AccountsViewState extends State<AccountsView> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              _formatAmount(balance, account.currency),
+              _formatAmount(balance, account.currency, privacyMode),
               style: AppTypography.body.copyWith(
                 color: isCreditCard
                     ? (balance > 0 ? AppColors.statusError : textPrimary)

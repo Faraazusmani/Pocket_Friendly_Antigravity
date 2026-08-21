@@ -275,11 +275,7 @@ class _CreateEditCategoryScreenState extends State<CreateEditCategoryScreen> {
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: borderCol),
                                     ),
-                                    focusedBorder: const UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColors.darkAccentPrimary,
-                                      ),
-                                    ),
+                                    focusedBorder: AppBorders.focusedUnderline(context),
                                   ),
                                   validator: (val) {
                                     if (val == null || val.trim().isEmpty) {

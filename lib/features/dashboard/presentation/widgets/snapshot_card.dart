@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/design_system/tokens.dart';
 import '../bloc/dashboard_state.dart';
 
+import '../../../../core/utilities/currency_formatter.dart';
+
 class SnapshotCard extends StatefulWidget {
   final DashboardLoaded state;
 
@@ -22,23 +24,11 @@ class _SnapshotCardState extends State<SnapshotCard> {
   }
 
   String _formatAmount(int amountInMinorUnits, String currency) {
-    if (widget.state.privacyModeEnabled) return '••••';
-    final double amt = amountInMinorUnits / 100.0;
-    final symbol = currency.toUpperCase() == 'INR'
-        ? '₹'
-        : (currency.toUpperCase() == 'USD' ? '\$' : '$currency ');
-
-    final digits = amt.toStringAsFixed(0);
-    final buffer = StringBuffer();
-    int count = 0;
-    for (int i = digits.length - 1; i >= 0; i--) {
-      if (count > 0 && count % 3 == 0) {
-        buffer.write(',');
-      }
-      buffer.write(digits[i]);
-      count++;
-    }
-    return '$symbol${buffer.toString().split('').reversed.join('')}';
+    return CurrencyFormatter.format(
+      amountInMinorUnits,
+      currency,
+      privacyMode: widget.state.privacyModeEnabled,
+    );
   }
 
   @override

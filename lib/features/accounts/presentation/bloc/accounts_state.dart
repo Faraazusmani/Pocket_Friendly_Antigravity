@@ -24,6 +24,7 @@ class AccountsLoaded extends AccountsState {
   final List<Goal> goals;
   final List<String> availableCurrencies;
   final String selectedCurrency;
+  final bool privacyModeEnabled;
 
   // Calculated stats mapping currency -> { 'netAvailableBalance': int, 'netWorth': int, 'assets': int, 'liabilities': int }
   final Map<String, Map<String, int>> currencyStats;
@@ -35,6 +36,7 @@ class AccountsLoaded extends AccountsState {
     required this.availableCurrencies,
     required this.selectedCurrency,
     required this.currencyStats,
+    this.privacyModeEnabled = false,
   });
 
   @override
@@ -45,6 +47,7 @@ class AccountsLoaded extends AccountsState {
     availableCurrencies,
     selectedCurrency,
     currencyStats,
+    privacyModeEnabled,
   ];
 
   AccountsLoaded copyWith({
@@ -54,6 +57,7 @@ class AccountsLoaded extends AccountsState {
     List<String>? availableCurrencies,
     String? selectedCurrency,
     Map<String, Map<String, int>>? currencyStats,
+    bool? privacyModeEnabled,
   }) {
     return AccountsLoaded(
       accounts: accounts ?? this.accounts,
@@ -62,6 +66,7 @@ class AccountsLoaded extends AccountsState {
       availableCurrencies: availableCurrencies ?? this.availableCurrencies,
       selectedCurrency: selectedCurrency ?? this.selectedCurrency,
       currencyStats: currencyStats ?? this.currencyStats,
+      privacyModeEnabled: privacyModeEnabled ?? this.privacyModeEnabled,
     );
   }
 }

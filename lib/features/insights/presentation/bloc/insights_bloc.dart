@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/di/service_locator.dart';
+import '../../../../core/security/privacy_mode_service.dart';
 import '../../../accounts/domain/account.dart';
 import '../../../categories/domain/category.dart';
 import '../../../goals/domain/goal.dart';
@@ -100,21 +102,11 @@ class InsightsBloc extends Bloc<InsightsEvent, InsightsState> {
         recurringRules: recurringRules,
       );
 
-      // Privacy Mode status is stored or toggled in profile settings or database
-      // Here we check the profile's field (if it doesn't exist, default to false)
-      // Let's check: in Dashboard Bloc we toggled privacy mode.
-      // Wait, is there a global setting or is it session based?
-      // In DashboardBloc, privacyModeEnabled is a state field.
-      // Let's fetch it from a session or database if available, or just check the repository/profile.
-      // E.g., we can mock/load it from secure storage or settings if available, or default to false.
-      // Let's default to false unless profile contains a flag.
-      bool privacyMode = false;
-
       emit(
         InsightsLoaded(
           data: data,
           selectedMonth: event.monthYear,
-          privacyModeEnabled: privacyMode,
+          privacyModeEnabled: sl.isRegistered<PrivacyModeService>() && sl<PrivacyModeService>().isEnabled,
           defaultCurrency: profile.defaultCurrency,
         ),
       );

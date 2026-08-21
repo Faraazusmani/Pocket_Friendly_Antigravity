@@ -25,6 +25,8 @@ import 'package:pocket_friendly/features/insights/presentation/bloc/insights_blo
 import 'package:pocket_friendly/features/insights/presentation/bloc/insights_event.dart';
 import 'package:pocket_friendly/features/insights/presentation/bloc/insights_state.dart';
 import 'package:pocket_friendly/features/transactions/domain/services/insights_service.dart';
+import 'package:pocket_friendly/core/di/service_locator.dart';
+import 'package:pocket_friendly/core/security/privacy_mode_service.dart';
 
 void main() {
   late AppDatabase database;
@@ -37,6 +39,9 @@ void main() {
   late RecurringRepository recurringRepo;
 
   setUp(() async {
+    await sl.reset();
+    sl.registerSingleton<PrivacyModeService>(FakePrivacyModeService());
+
     final key = List<int>.generate(32, (i) => i);
     database = AppDatabase(openEncryptedConnection(key, inMemory: true));
 
@@ -200,4 +205,14 @@ void main() {
           .having((s) => s.privacyModeEnabled, 'privacyMode', false),
     ],
   );
+}
+
+class FakePrivacyModeService implements PrivacyModeService {
+  bool _enabled = false;
+  @override
+  bool get isEnabled => _enabled;
+  @override
+  Future<void> setEnabled(bool enabled) async => _enabled = enabled;
+  @override
+  Future<void> init() async {}
 }

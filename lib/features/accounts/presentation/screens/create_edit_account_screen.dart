@@ -216,6 +216,7 @@ class _CreateEditAccountScreenState extends State<CreateEditAccountScreen> {
               backgroundColor: scaffoldBg,
               elevation: 0,
               leading: IconButton(
+                tooltip: 'Back',
                 icon: Icon(LucideIcons.arrowLeft, color: textPrimary),
                 onPressed: () {
                   sl<HapticService>().selectionClick();
@@ -233,6 +234,7 @@ class _CreateEditAccountScreenState extends State<CreateEditAccountScreen> {
                 if (_isEdit &&
                     _existingAccount?.status != AccountStatus.archived)
                   IconButton(
+                    tooltip: 'Archive Account',
                     icon: const Icon(
                       LucideIcons.archive,
                       color: AppColors.statusError,
@@ -310,11 +312,7 @@ class _CreateEditAccountScreenState extends State<CreateEditAccountScreen> {
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: borderCol),
                                     ),
-                                    focusedBorder: const UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColors.darkAccentPrimary,
-                                      ),
-                                    ),
+                                    focusedBorder: AppBorders.focusedUnderline(context),
                                   ),
                                   validator: (val) {
                                     if (val == null || val.trim().isEmpty) {
@@ -436,11 +434,7 @@ class _CreateEditAccountScreenState extends State<CreateEditAccountScreen> {
                                           color: borderCol,
                                         ),
                                       ),
-                                      focusedBorder: const UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.darkAccentPrimary,
-                                        ),
-                                      ),
+                                      focusedBorder: AppBorders.focusedUnderline(context),
                                     ),
                                     validator: (val) {
                                       if (val == null || val.trim().isEmpty) {
@@ -476,11 +470,7 @@ class _CreateEditAccountScreenState extends State<CreateEditAccountScreen> {
                                           color: borderCol,
                                         ),
                                       ),
-                                      focusedBorder: const UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.darkAccentPrimary,
-                                        ),
-                                      ),
+                                      focusedBorder: AppBorders.focusedUnderline(context),
                                     ),
                                     validator: (val) {
                                       if (val == null || val.trim().isEmpty) {
@@ -513,13 +503,7 @@ class _CreateEditAccountScreenState extends State<CreateEditAccountScreen> {
                                             color: borderCol,
                                           ),
                                         ),
-                                        focusedBorder:
-                                            const UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    AppColors.darkAccentPrimary,
-                                              ),
-                                            ),
+                                        focusedBorder: AppBorders.focusedUnderline(context),
                                       ),
                                       validator: (val) {
                                         if (val == null || val.trim().isEmpty) {

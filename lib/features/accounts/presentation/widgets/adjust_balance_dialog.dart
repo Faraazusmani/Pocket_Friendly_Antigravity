@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/tokens.dart';
+import '../../../../core/utilities/currency_formatter.dart';
 import '../../domain/account.dart';
 
 class AdjustBalanceDialog extends StatefulWidget {
@@ -63,14 +64,9 @@ class _AdjustBalanceDialogState extends State<AdjustBalanceDialog> {
   }
 
   String _formatAmount(int amountMinorUnits, String currency) {
-    final double major = amountMinorUnits.abs() / 100.0;
-    final String symbol = currency.toUpperCase() == 'INR'
-        ? '₹'
-        : (currency.toUpperCase() == 'USD'
-              ? '\$'
-              : (currency.toUpperCase() == 'EUR' ? '€' : '$currency '));
-    final sign = amountMinorUnits < 0 ? '-' : (amountMinorUnits > 0 ? '+' : '');
-    return '$sign$symbol${major.toStringAsFixed(0)}';
+    final formatted = CurrencyFormatter.format(amountMinorUnits, currency);
+    if (amountMinorUnits > 0) return '+$formatted';
+    return formatted;
   }
 
   @override
@@ -146,9 +142,7 @@ class _AdjustBalanceDialogState extends State<AdjustBalanceDialog> {
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: borderCol),
                 ),
-                focusedBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.darkAccentPrimary),
-                ),
+                focusedBorder: AppBorders.focusedUnderline(context),
               ),
             ),
             const SizedBox(height: AppSpacing.md),

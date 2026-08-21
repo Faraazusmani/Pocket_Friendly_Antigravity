@@ -10,6 +10,9 @@ import '../../../categories/domain/repositories/category_repository.dart';
 import '../../../transactions/domain/transaction.dart';
 import '../../../transactions/domain/repositories/transaction_repository.dart';
 import '../../../transactions/domain/services/financial_engine.dart';
+import '../../../../core/di/service_locator.dart';
+import '../../../../core/security/privacy_mode_service.dart';
+import '../../../../core/utilities/currency_formatter.dart';
 import 'goals_event.dart';
 import 'goals_state.dart';
 
@@ -93,6 +96,7 @@ class GoalsBloc extends Bloc<GoalsEvent, GoalsState> {
           transactions: transactions,
           goalBalances: goalBalances,
           goalProgressPercents: goalProgressPercents,
+          privacyModeEnabled: sl.isRegistered<PrivacyModeService>() && sl<PrivacyModeService>().isEnabled,
         ),
       );
     } catch (e) {
@@ -435,10 +439,10 @@ class GoalsBloc extends Bloc<GoalsEvent, GoalsState> {
         transactions,
       );
       if (event.amount > currentBalance) {
-        final double maxMajor = currentBalance / 100.0;
+        final formattedMax = CurrencyFormatter.format(currentBalance, goal.currency);
         emit(
           GoalsError(
-            'Withdrawal rejected. Amount exceeds current balance. Max available: ₹${maxMajor.toStringAsFixed(0)}',
+            'Withdrawal rejected. Amount exceeds current balance. Max available: $formattedMax',
           ),
         );
         return;

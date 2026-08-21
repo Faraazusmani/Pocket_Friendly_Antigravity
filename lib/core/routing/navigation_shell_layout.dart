@@ -117,32 +117,36 @@ class _NavigationShellLayoutState extends State<NavigationShellLayout> {
                     const SizedBox(width: AppSpacing.sm),
 
                     // separate floating "+" action pill
-                    GestureDetector(
-                      onTap: () => _openRecordTransactionSheet(context),
-                      child: Container(
-                        width: 52,
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkAccentPrimary
-                              : AppColors.lightAccentPrimary,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color:
-                                  (isDark
-                                          ? AppColors.darkAccentPrimary
-                                          : AppColors.lightAccentPrimary)
-                                      .withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          LucideIcons.plus,
-                          color: Colors.black,
-                          size: 24,
+                    Semantics(
+                      button: true,
+                      label: 'Record Transaction',
+                      child: GestureDetector(
+                        onTap: () => _openRecordTransactionSheet(context),
+                        child: Container(
+                          width: 52,
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? AppColors.darkAccentPrimary
+                                : AppColors.lightAccentPrimary,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color:
+                                    (isDark
+                                            ? AppColors.darkAccentPrimary
+                                            : AppColors.lightAccentPrimary)
+                                        .withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            LucideIcons.plus,
+                            color: Colors.black,
+                            size: 24,
+                          ),
                         ),
                       ),
                     ),
@@ -253,10 +257,9 @@ class _NavigationShellLayoutState extends State<NavigationShellLayout> {
           alignment: Alignment.center,
           child: Text(
             label,
-            style: AppTypography.button.copyWith(
+            style: AppTypography.label.copyWith(
               color: isSelected ? activeColor : inactiveColor,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              fontSize: 12,
               letterSpacing: 1.0,
             ),
           ),

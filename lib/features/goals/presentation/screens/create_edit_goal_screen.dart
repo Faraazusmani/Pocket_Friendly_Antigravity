@@ -188,6 +188,7 @@ class _CreateEditGoalScreenState extends State<CreateEditGoalScreen> {
               backgroundColor: scaffoldBg,
               elevation: 0,
               leading: IconButton(
+                tooltip: 'Back',
                 icon: Icon(LucideIcons.arrowLeft, color: textPrimary),
                 onPressed: () {
                   sl<HapticService>().selectionClick();
@@ -204,6 +205,7 @@ class _CreateEditGoalScreenState extends State<CreateEditGoalScreen> {
               actions: [
                 if (_isEdit)
                   IconButton(
+                    tooltip: 'Delete Goal',
                     icon: const Icon(
                       LucideIcons.trash2,
                       color: AppColors.statusError,
@@ -281,11 +283,7 @@ class _CreateEditGoalScreenState extends State<CreateEditGoalScreen> {
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: borderCol),
                                     ),
-                                    focusedBorder: const UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColors.darkAccentPrimary,
-                                      ),
-                                    ),
+                                    focusedBorder: AppBorders.focusedUnderline(context),
                                   ),
                                   validator: (val) {
                                     if (val == null || val.trim().isEmpty) {
@@ -350,13 +348,7 @@ class _CreateEditGoalScreenState extends State<CreateEditGoalScreen> {
                                               color: borderCol,
                                             ),
                                           ),
-                                          focusedBorder:
-                                              const UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: AppColors
-                                                      .darkAccentPrimary,
-                                                ),
-                                              ),
+                                          focusedBorder: AppBorders.focusedUnderline(context),
                                         ),
                                         validator: (val) {
                                           if (val == null ||
@@ -482,11 +474,7 @@ class _CreateEditGoalScreenState extends State<CreateEditGoalScreen> {
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: borderCol),
                                     ),
-                                    focusedBorder: const UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColors.darkAccentPrimary,
-                                      ),
-                                    ),
+                                    focusedBorder: AppBorders.focusedUnderline(context),
                                   ),
                                 ),
                                 const SizedBox(height: AppSpacing.lg),

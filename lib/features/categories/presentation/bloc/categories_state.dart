@@ -22,6 +22,8 @@ class CategoriesLoaded extends CategoriesState {
   final List<Category> categories;
   final List<Tag> tags;
   final List<Transaction> transactions;
+  final String defaultCurrency;
+  final bool privacyModeEnabled;
 
   // Pre-calculated spent rollups mapping categoryId -> spent amount in minor units
   final Map<String, int> categorySpent;
@@ -31,22 +33,35 @@ class CategoriesLoaded extends CategoriesState {
     required this.tags,
     required this.transactions,
     required this.categorySpent,
+    required this.defaultCurrency,
+    this.privacyModeEnabled = false,
   });
 
   @override
-  List<Object?> get props => [categories, tags, transactions, categorySpent];
+  List<Object?> get props => [
+    categories,
+    tags,
+    transactions,
+    categorySpent,
+    defaultCurrency,
+    privacyModeEnabled,
+  ];
 
   CategoriesLoaded copyWith({
     List<Category>? categories,
     List<Tag>? tags,
     List<Transaction>? transactions,
     Map<String, int>? categorySpent,
+    String? defaultCurrency,
+    bool? privacyModeEnabled,
   }) {
     return CategoriesLoaded(
       categories: categories ?? this.categories,
       tags: tags ?? this.tags,
       transactions: transactions ?? this.transactions,
       categorySpent: categorySpent ?? this.categorySpent,
+      defaultCurrency: defaultCurrency ?? this.defaultCurrency,
+      privacyModeEnabled: privacyModeEnabled ?? this.privacyModeEnabled,
     );
   }
 }
