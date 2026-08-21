@@ -67,6 +67,27 @@ class AppRadius {
   static const double pill = 999.0;
 }
 
+/// Tokenized borders that dynamically adapt to theme brightness.
+class AppBorders {
+  static InputBorder focusedUnderline(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return UnderlineInputBorder(
+      borderSide: BorderSide(
+        color: isDark ? AppColors.darkAccentPrimary : AppColors.lightAccentPrimary,
+      ),
+    );
+  }
+
+  static InputBorder focusedOutline(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return OutlineInputBorder(
+      borderSide: BorderSide(
+        color: isDark ? AppColors.darkAccentPrimary : AppColors.lightAccentPrimary,
+      ),
+    );
+  }
+}
+
 /// Motion duration tokens for standardizing transitions and animations.
 class AppMotion {
   static const Duration fast = Duration(milliseconds: 150);

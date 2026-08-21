@@ -6,6 +6,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/design_system/tokens.dart';
 import '../../../../core/platform/haptic_service.dart';
+import '../../../../core/utilities/currency_formatter.dart';
 import '../../../profiles/domain/repositories/profile_repository.dart';
 import '../../../accounts/domain/repositories/account_repository.dart';
 import '../../../categories/domain/repositories/category_repository.dart';
@@ -67,10 +68,11 @@ class _InsightsViewState extends State<InsightsView> {
   }
 
   String _formatAmount(int amountMinor, String currency, bool privacyMode) {
-    if (privacyMode) return '•••';
-    final double major = amountMinor / 100.0;
-    final String symbol = currency.toUpperCase() == 'INR' ? '₹' : '$currency ';
-    return '$symbol${major.toStringAsFixed(0)}';
+    return CurrencyFormatter.format(
+      amountMinor,
+      currency,
+      privacyMode: privacyMode,
+    );
   }
 
   void _showDrillDownSheet({
@@ -902,7 +904,7 @@ class _InsightsViewState extends State<InsightsView> {
                                                       ? Colors.black26
                                                       : Colors.grey.shade200),
                                             borderRadius: BorderRadius.circular(
-                                              AppSpacing.sm,
+                                              AppRadius.small,
                                             ),
                                           ),
                                           child: Text(
@@ -973,6 +975,7 @@ class _InsightsViewState extends State<InsightsView> {
                       child: Row(
                         children: [
                           IconButton(
+                            tooltip: 'Voice Input',
                             icon: const Icon(
                               LucideIcons.mic,
                               color: AppColors.statusError,
@@ -992,6 +995,7 @@ class _InsightsViewState extends State<InsightsView> {
                             ),
                           ),
                           IconButton(
+                            tooltip: 'Send Message',
                             icon: Icon(
                               LucideIcons.send,
                               color: isDark
@@ -1025,6 +1029,10 @@ class _InsightsViewState extends State<InsightsView> {
     required String currency,
     required bool isPrivacy,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textSecondary = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
     final isIncrease = changePercent > 0;
     final color = changePercent == 0
         ? AppColors.darkTextSecondary
@@ -1033,7 +1041,7 @@ class _InsightsViewState extends State<InsightsView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+        Text(label, style: AppTypography.caption.copyWith(color: textSecondary)),
         const SizedBox(height: 2),
         Text(
           _formatAmount(amount, currency, isPrivacy),

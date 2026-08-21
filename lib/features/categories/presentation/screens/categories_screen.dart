@@ -11,6 +11,7 @@ import '../../../transactions/domain/repositories/transaction_repository.dart';
 import '../bloc/categories_bloc.dart';
 import '../bloc/categories_event.dart';
 import '../bloc/categories_state.dart';
+import '../../../../core/utilities/currency_formatter.dart';
 import '../widgets/tag_dialogs.dart';
 
 class CategoriesScreen extends StatelessWidget {
@@ -84,9 +85,12 @@ class _CategoriesViewState extends State<CategoriesView>
     }
   }
 
-  String _formatAmount(int amountMinorUnits) {
-    final double major = amountMinorUnits / 100.0;
-    return '₹${major.toStringAsFixed(0)}';
+  String _formatAmount(int amountMinorUnits, String currency, bool privacyMode) {
+    return CurrencyFormatter.format(
+      amountMinorUnits,
+      currency,
+      privacyMode: privacyMode,
+    );
   }
 
   @override
@@ -134,6 +138,7 @@ class _CategoriesViewState extends State<CategoriesView>
             backgroundColor: scaffoldBg,
             elevation: 0,
             leading: IconButton(
+              tooltip: 'Back',
               icon: Icon(LucideIcons.arrowLeft, color: textPrimary),
               onPressed: () {
                 sl<HapticService>().selectionClick();
@@ -240,10 +245,67 @@ class _CategoriesViewState extends State<CategoriesView>
         .toList();
 
     if (parentCategories.isEmpty) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
       return Center(
-        child: Text(
-          'No categories found.',
-          style: AppTypography.body.copyWith(color: textSecondary),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Container(
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            decoration: BoxDecoration(
+              color: cardBg,
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+              border: Border.all(color: borderCol),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  LucideIcons.folderOpen,
+                  size: 48,
+                  color: textSecondary,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  'No Categories',
+                  style: AppTypography.sectionHeading.copyWith(
+                    color: textPrimary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Create custom categories to organize your expenses and incomes.',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.secondaryBody.copyWith(
+                    color: textSecondary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isDark
+                        ? AppColors.darkAccentPrimary
+                        : AppColors.lightAccentPrimary,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppRadius.medium,
+                      ),
+                    ),
+                  ),
+                  icon: const Icon(LucideIcons.plus, size: 16),
+                  label: const Text('CREATE CATEGORY'),
+                  onPressed: () async {
+                    sl<HapticService>().mediumImpact();
+                    final refresh = await context.push<bool>('/categories/create');
+                    if (refresh == true) {
+                      context.read<CategoriesBloc>().add(const LoadCategoriesAndTags());
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
       );
     }
@@ -280,7 +342,7 @@ class _CategoriesViewState extends State<CategoriesView>
                 ),
               ),
               subtitle: Text(
-                'Spent this month: ${_formatAmount(spent)}',
+                'Spent this month: ${_formatAmount(spent, state.defaultCurrency, state.privacyModeEnabled)}',
                 style: AppTypography.caption.copyWith(color: textSecondary),
               ),
               trailing: Row(
@@ -342,7 +404,7 @@ class _CategoriesViewState extends State<CategoriesView>
                           ),
                         ),
                         subtitle: Text(
-                          'Spent: ${_formatAmount(childSpent)}',
+                          'Spent: ${_formatAmount(childSpent, state.defaultCurrency, state.privacyModeEnabled)}',
                           style: AppTypography.caption.copyWith(
                             color: textSecondary,
                           ),
@@ -387,10 +449,71 @@ class _CategoriesViewState extends State<CategoriesView>
     Color textSecondary,
   ) {
     if (state.tags.isEmpty) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
       return Center(
-        child: Text(
-          'No tags created yet.',
-          style: AppTypography.body.copyWith(color: textSecondary),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Container(
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            decoration: BoxDecoration(
+              color: cardBg,
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+              border: Border.all(color: borderCol),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  LucideIcons.tag,
+                  size: 48,
+                  color: textSecondary,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  'No Tags',
+                  style: AppTypography.sectionHeading.copyWith(
+                    color: textPrimary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Create custom tags for granular tracking (e.g. #travel, #reimbursable).',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.secondaryBody.copyWith(
+                    color: textSecondary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isDark
+                        ? AppColors.darkAccentPrimary
+                        : AppColors.lightAccentPrimary,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppRadius.medium,
+                      ),
+                    ),
+                  ),
+                  icon: const Icon(LucideIcons.plus, size: 16),
+                  label: const Text('CREATE TAG'),
+                  onPressed: () {
+                    sl<HapticService>().mediumImpact();
+                    showDialog(
+                      context: context,
+                      builder: (dialogCtx) => CreateTagDialog(
+                        onSave: (name) {
+                          context.read<CategoriesBloc>().add(CreateTag(name));
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
       );
     }
@@ -426,6 +549,7 @@ class _CategoriesViewState extends State<CategoriesView>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
+                    tooltip: 'Edit Tag',
                     icon: Icon(
                       LucideIcons.edit2,
                       size: 16,

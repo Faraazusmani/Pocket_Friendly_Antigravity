@@ -14,6 +14,9 @@ import '../bloc/goals_bloc.dart';
 import '../bloc/goals_event.dart';
 import '../bloc/goals_state.dart';
 
+import '../../../../core/utilities/currency_formatter.dart';
+import '../../../../core/security/privacy_mode_service.dart';
+
 class GoalsScreen extends StatelessWidget {
   const GoalsScreen({Key? key}) : super(key: key);
 
@@ -59,9 +62,12 @@ class GoalsView extends StatelessWidget {
   }
 
   String _formatAmount(int amountMinorUnits, String currency) {
-    final double major = amountMinorUnits / 100.0;
-    final String symbol = currency.toUpperCase() == 'INR' ? '₹' : '$currency ';
-    return '$symbol${major.toStringAsFixed(0)}';
+    final privacyMode = sl.isRegistered<PrivacyModeService>() && sl<PrivacyModeService>().isEnabled;
+    return CurrencyFormatter.format(
+      amountMinorUnits,
+      currency,
+      privacyMode: privacyMode,
+    );
   }
 
   String _formatDate(DateTime date) {
@@ -117,6 +123,7 @@ class GoalsView extends StatelessWidget {
               backgroundColor: scaffoldBg,
               elevation: 0,
               leading: IconButton(
+                tooltip: 'Back',
                 icon: Icon(LucideIcons.arrowLeft, color: textPrimary),
                 onPressed: () {
                   sl<HapticService>().selectionClick();

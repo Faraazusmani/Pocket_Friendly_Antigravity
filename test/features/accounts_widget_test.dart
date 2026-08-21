@@ -110,7 +110,7 @@ void main() {
       expect(find.text('LIABILITIES'), findsOneWidget);
 
       // Tracked bank account is 50,000 INR
-      expect(find.text('₹50000'), findsWidgets);
+      expect(find.text('₹50,000'), findsWidgets);
       expect(find.text('HDFC Checking'), findsOneWidget);
     },
   );
@@ -188,14 +188,14 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify tracked balance label
-    expect(find.text('₹50000'), findsOneWidget);
+    expect(find.text('₹50,000'), findsOneWidget);
 
     // Enter new actual balance of 52,000 INR
     await tester.enterText(find.byType(TextFormField), '52000');
     await tester.pumpAndSettle();
 
-    // Calculated adjustment should be +₹2000
-    expect(find.text('+₹2000'), findsOneWidget);
+    // Calculated adjustment should be +₹2,000
+    expect(find.text('+₹2,000'), findsOneWidget);
 
     // Click Save
     await tester.tap(find.text('SAVE'));

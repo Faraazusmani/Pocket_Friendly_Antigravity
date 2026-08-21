@@ -10,10 +10,8 @@ import 'package:pocket_friendly/features/accounts/data/repositories/account_repo
 import 'package:pocket_friendly/features/categories/domain/category.dart';
 import 'package:pocket_friendly/features/categories/domain/repositories/category_repository.dart';
 import 'package:pocket_friendly/features/categories/data/repositories/category_repository_impl.dart';
-import 'package:pocket_friendly/features/goals/domain/goal.dart';
 import 'package:pocket_friendly/features/goals/domain/repositories/goal_repository.dart';
 import 'package:pocket_friendly/features/goals/data/repositories/goal_repository_impl.dart';
-import 'package:pocket_friendly/features/budgets/domain/budget.dart';
 import 'package:pocket_friendly/features/budgets/domain/repositories/budget_repository.dart';
 import 'package:pocket_friendly/features/budgets/data/repositories/budget_repository_impl.dart';
 import 'package:pocket_friendly/features/recurring/domain/repositories/recurring_repository.dart';
@@ -25,6 +23,8 @@ import 'package:pocket_friendly/features/insights/presentation/bloc/insights_blo
 import 'package:pocket_friendly/features/insights/presentation/bloc/insights_event.dart';
 import 'package:pocket_friendly/features/insights/presentation/bloc/insights_state.dart';
 import 'package:pocket_friendly/features/transactions/domain/services/insights_service.dart';
+import 'package:pocket_friendly/core/di/service_locator.dart';
+import 'package:pocket_friendly/core/security/privacy_mode_service.dart';
 
 void main() {
   late AppDatabase database;
@@ -37,6 +37,9 @@ void main() {
   late RecurringRepository recurringRepo;
 
   setUp(() async {
+    await sl.reset();
+    sl.registerSingleton<PrivacyModeService>(FakePrivacyModeService());
+
     final key = List<int>.generate(32, (i) => i);
     database = AppDatabase(openEncryptedConnection(key, inMemory: true));
 
@@ -200,4 +203,14 @@ void main() {
           .having((s) => s.privacyModeEnabled, 'privacyMode', false),
     ],
   );
+}
+
+class FakePrivacyModeService implements PrivacyModeService {
+  bool _enabled = false;
+  @override
+  bool get isEnabled => _enabled;
+  @override
+  Future<void> setEnabled(bool enabled) async => _enabled = enabled;
+  @override
+  Future<void> init() async {}
 }

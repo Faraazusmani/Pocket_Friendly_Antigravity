@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
+import '../../../../core/di/service_locator.dart';
+import '../../../../core/security/privacy_mode_service.dart';
 import '../../../profiles/domain/repositories/profile_repository.dart';
 import '../../domain/account.dart';
 import '../../domain/repositories/account_repository.dart';
@@ -153,6 +155,7 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
           availableCurrencies: availableCurrencies,
           selectedCurrency: selectedCurrency,
           currencyStats: currencyStats,
+          privacyModeEnabled: sl.isRegistered<PrivacyModeService>() && sl<PrivacyModeService>().isEnabled,
         ),
       );
     } catch (e) {

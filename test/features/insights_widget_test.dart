@@ -5,13 +5,12 @@ import 'package:pocket_friendly/core/result/result.dart';
 import 'package:pocket_friendly/core/di/service_locator.dart';
 import 'package:pocket_friendly/core/storage/database.dart';
 import 'package:pocket_friendly/core/platform/haptic_service.dart';
+import 'package:pocket_friendly/core/security/privacy_mode_service.dart';
 import 'package:pocket_friendly/features/profiles/domain/profile.dart';
 import 'package:pocket_friendly/features/profiles/domain/repositories/profile_repository.dart';
 import 'package:pocket_friendly/features/profiles/data/repositories/profile_repository_impl.dart';
-import 'package:pocket_friendly/features/accounts/domain/account.dart';
 import 'package:pocket_friendly/features/accounts/domain/repositories/account_repository.dart';
 import 'package:pocket_friendly/features/accounts/data/repositories/account_repository_impl.dart';
-import 'package:pocket_friendly/features/categories/domain/category.dart';
 import 'package:pocket_friendly/features/categories/domain/repositories/category_repository.dart';
 import 'package:pocket_friendly/features/categories/data/repositories/category_repository_impl.dart';
 import 'package:pocket_friendly/features/goals/domain/repositories/goal_repository.dart';
@@ -58,6 +57,7 @@ void main() {
     await sl.reset();
     sl.registerSingleton<AppDatabase>(database);
     sl.registerLazySingleton<HapticService>(() => MockHapticService());
+    sl.registerSingleton<PrivacyModeService>(FakePrivacyModeService());
 
     profileRepo = ProfileRepositoryImpl(database);
     accountRepo = AccountRepositoryImpl(database);
@@ -105,4 +105,14 @@ void main() {
     expect(find.text('TOP CATEGORIES'), findsOneWidget);
     expect(find.text('TREND (LAST 6 MONTHS)'), findsOneWidget);
   });
+}
+
+class FakePrivacyModeService implements PrivacyModeService {
+  bool _enabled = false;
+  @override
+  bool get isEnabled => _enabled;
+  @override
+  Future<void> setEnabled(bool enabled) async => _enabled = enabled;
+  @override
+  Future<void> init() async {}
 }

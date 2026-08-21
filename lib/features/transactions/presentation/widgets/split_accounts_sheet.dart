@@ -299,11 +299,7 @@ class _SplitAccountsSheetState extends State<SplitAccountsSheet> {
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: borderCol),
                             ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: AppColors.darkAccentPrimary,
-                              ),
-                            ),
+                            focusedBorder: AppBorders.focusedOutline(context),
                           ),
                           onChanged: (_) {
                             setState(() {});

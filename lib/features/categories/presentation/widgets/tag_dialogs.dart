@@ -63,9 +63,7 @@ class _CreateTagDialogState extends State<CreateTagDialog> {
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: borderCol),
             ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.darkAccentPrimary),
-            ),
+            focusedBorder: AppBorders.focusedUnderline(context),
           ),
           validator: (val) {
             if (val == null || val.trim().isEmpty) {
@@ -177,9 +175,7 @@ class _RenameTagDialogState extends State<RenameTagDialog> {
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: borderCol),
             ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.darkAccentPrimary),
-            ),
+            focusedBorder: AppBorders.focusedUnderline(context),
           ),
           validator: (val) {
             if (val == null || val.trim().isEmpty) {

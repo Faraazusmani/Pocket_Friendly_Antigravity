@@ -18,6 +18,7 @@ import '../../features/recurring/domain/repositories/recurring_repository.dart';
 import '../platform/file_service.dart';
 import '../platform/haptic_service.dart';
 import '../platform/notification_service.dart';
+import '../security/privacy_mode_service.dart';
 import '../security/security_service.dart';
 import '../storage/database.dart';
 import '../utilities/logger.dart';
@@ -44,6 +45,11 @@ Future<void> initServiceLocator() async {
 
   sl.registerLazySingleton<FileService>(() => const FileServiceImpl());
   sl.registerLazySingleton<HapticService>(() => const HapticServiceImpl());
+
+  // Privacy Mode Settings
+  final privacyModeService = PrivacyModeServiceImpl(secureStorage: sl<FlutterSecureStorage>());
+  await privacyModeService.init();
+  sl.registerSingleton<PrivacyModeService>(privacyModeService);
 
   final notificationService = NotificationServiceImpl(
     notificationsPlugin: sl<FlutterLocalNotificationsPlugin>(),
